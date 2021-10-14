@@ -1,10 +1,11 @@
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import Layout from './components/includes/Layout';
-import AboutUs from './components/pages/AboutUs';
-import Fabric from './components/pages/Fabric';
-import Home from './components/pages/Home';
-import Ospf from './components/pages/Ospf';
-import Vxlan from './components/pages/Vxlan';
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import Layout from "./components/includes/Layout";
+import AboutUs from "./components/pages/AboutUs";
+import Fabric from "./components/pages/Fabric";
+import Home from "./components/pages/Home";
+import Ospf from "./components/pages/Ospf";
+import Vxlan from "./components/pages/Vxlan";
+import Login from "./components/pages/Login";
 
 function App() {
   return (
@@ -26,6 +27,9 @@ function App() {
             </Route>
             <Route exact path="/us">
               <AboutUs />
+            </Route>
+            <Route exact path="/login">
+              <Login />
             </Route>
           </Switch>
         </Layout>

@@ -3,22 +3,24 @@ import {
   ServerIcon,
   ShareIcon,
   UserGroupIcon,
-} from '@heroicons/react/outline';
-import { NavLink, useLocation } from 'react-router-dom';
+  LoginIcon,
+} from "@heroicons/react/outline";
+import { NavLink, useLocation } from "react-router-dom";
 
 const navigation = [
-  { name: 'Dashboard', href: '/', icon: HomeIcon },
-  { name: 'Fabric', href: '/fabric', icon: ShareIcon },
-  { name: 'VXLAN', href: '/vxlan', icon: ServerIcon },
-  { name: 'OSPF', href: '/ospf', icon: ServerIcon },
-  { name: 'About Us', href: '/us', icon: UserGroupIcon },
+  { name: "Dashboard", href: "/", icon: HomeIcon },
+  { name: "Fabric", href: "/fabric", icon: ShareIcon },
+  { name: "VXLAN", href: "/vxlan", icon: ServerIcon },
+  { name: "OSPF", href: "/ospf", icon: ServerIcon },
+  { name: "About Us", href: "/us", icon: UserGroupIcon },
+  { name: "Login", href: "/login", icon: LoginIcon },
 ];
 
 export default function Sidebar() {
   let location = useLocation();
 
   function classNames(...classes) {
-    return classes.filter(Boolean).join(' ');
+    return classes.filter(Boolean).join(" ");
   }
 
   return (
@@ -33,16 +35,19 @@ export default function Sidebar() {
               height="39"
               viewBox="0 0 50 39"
               fill="none"
-              xmlns="http://www.w3.org/2000/svg">
-              {' '}
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              {" "}
               <path
                 d="M16.4992 2H37.5808L22.0816 24.9729H1L16.4992 2Z"
                 className="ccompli1"
-                fill="#007AFF"></path>{' '}
+                fill="#007AFF"
+              ></path>{" "}
               <path
                 d="M17.4224 27.102L11.4192 36H33.5008L49 13.0271H32.7024L23.2064 27.102H17.4224Z"
                 className="ccustom"
-                fill="#312ECB"></path>{' '}
+                fill="#312ECB"
+              ></path>{" "}
             </svg>
             <h1 className="text-2xl text-blue-600 font-bold tracking-wide">
               Skripsi
@@ -57,16 +62,17 @@ export default function Sidebar() {
                   exact
                   className={classNames(
                     location.pathname === item.href
-                      ? 'bg-gray-100 text-apps-primary'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-apps-primary',
-                    'group rounded-md py-3 px-4 flex items-center font-semibold tracking-wide transition-all duration-300 ease-in-out',
-                  )}>
+                      ? "bg-gray-100 text-apps-primary"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-apps-primary",
+                    "group rounded-md py-3 px-4 flex items-center font-semibold tracking-wide transition-all duration-300 ease-in-out"
+                  )}
+                >
                   <item.icon
                     className={classNames(
                       location.pathname === item.href
-                        ? 'text-apps-primary'
-                        : 'text-gray-400 group-hover:text-apps-primary',
-                      'mr-3 flex-shrink-0 h-7 w-7',
+                        ? "text-apps-primary"
+                        : "text-gray-400 group-hover:text-apps-primary",
+                      "mr-3 flex-shrink-0 h-7 w-7"
                     )}
                     aria-hidden="true"
                   />
