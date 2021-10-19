@@ -72,7 +72,7 @@ export default function SidebarMobile({ handlerSidebar }) {
               fill="#312ECB"></path>{' '}
           </svg>
           <h1 className="text-xl ml-2 text-blue-600 font-bold tracking-wider">
-            Skripsi
+            V-Mat
           </h1>
         </div>
         <div className="mt-5 flex-1 h-0 overflow-y-auto">

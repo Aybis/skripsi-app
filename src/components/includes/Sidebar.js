@@ -45,7 +45,7 @@ export default function Sidebar() {
                 fill="#312ECB"></path>{' '}
             </svg>
             <h1 className="text-2xl text-blue-600 font-bold tracking-wide">
-              Skripsi
+              V-Mat
             </h1>
           </div>
           <div className="flex-grow mt-5 flex flex-col">

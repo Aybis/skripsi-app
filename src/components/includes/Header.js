@@ -2,12 +2,25 @@ import { Menu, Transition } from '@headlessui/react';
 import { BellIcon, MenuAlt2Icon } from '@heroicons/react/outline';
 import { SearchIcon } from '@heroicons/react/solid';
 import { Fragment } from 'react';
+import { Redirect } from 'react-router-dom';
 
 const userNavigation = [
-  { name: 'Your Profile', href: '#' },
-  { name: 'Settings', href: '#' },
-  { name: 'Sign out', href: '#' },
+  { name: 'Your Profile', href: 'profile' },
+  { name: 'Settings', href: 'setting' },
+  { name: 'Sign out', href: 'logout' },
 ];
+
+const handlerLogOut = (val) => {
+  console.log(val);
+  if (val === 'logout') {
+    // remove token
+    localStorage.removeItem('VMAT:user');
+    // redirect link
+    <Redirect push to="/login" />;
+    // reload page
+    window.location.reload();
+  }
+};
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -78,14 +91,14 @@ export default function Header({ handlerSidebar }) {
                 {userNavigation.map((item) => (
                   <Menu.Item key={item.name}>
                     {({ active }) => (
-                      <a
-                        href={item.href}
+                      <div
+                        onClick={() => handlerLogOut(item.href)}
                         className={classNames(
                           active ? 'bg-gray-100' : '',
-                          'block py-2 px-4 text-sm text-gray-700',
+                          'block py-2 px-4 text-sm text-gray-700 cursor-pointer',
                         )}>
                         {item.name}
-                      </a>
+                      </div>
                     )}
                   </Menu.Item>
                 ))}

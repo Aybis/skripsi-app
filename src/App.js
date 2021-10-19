@@ -1,34 +1,21 @@
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import Layout from './components/includes/Layout';
-import AboutUs from './components/pages/AboutUs';
-import Fabric from './components/pages/Fabric';
-import Home from './components/pages/Home';
-import Ospf from './components/pages/Ospf';
-import Vxlan from './components/pages/Vxlan';
+import { createBrowserHistory } from 'history';
+import { Router, Switch } from 'react-router-dom';
+import Authenticated from './components/middleware/Authenticated';
+import Gate from './components/middleware/Gate';
+import Login from './components/pages/Login';
+import Index from './route/Index';
 
 function App() {
+  const history = createBrowserHistory({ basename: process.env.PUBLIC_URL });
+
   return (
     <>
-      <Router>
-        <Layout>
-          <Switch>
-            <Route exact path="/">
-              <Home />
-            </Route>
-            <Route exact path="/fabric">
-              <Fabric />
-            </Route>
-            <Route exact path="/ospf">
-              <Ospf />
-            </Route>
-            <Route exact path="/vxlan">
-              <Vxlan />
-            </Route>
-            <Route exact path="/us">
-              <AboutUs />
-            </Route>
-          </Switch>
-        </Layout>
+      <Router history={history}>
+        <Switch>
+          <Gate path="/login" component={Login}></Gate>
+          {/* Route After Middleware */}
+          <Authenticated exact path="/" component={Index}></Authenticated>
+        </Switch>
       </Router>
     </>
   );
