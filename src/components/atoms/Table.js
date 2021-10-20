@@ -3,19 +3,21 @@ import {
   PlusSmIcon,
   ServerIcon,
   ViewGridAddIcon,
-} from '@heroicons/react/outline';
+} from "@heroicons/react/outline";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 /* This example requires Tailwind CSS v2.0+ */
-const people = [
+const routersInit = [
   {
-    name: 'JKT-01-GW',
-    location: 'Jakarta',
-    ip: '10.0.0.1/22',
+    name: "JKT-01-GW1",
+    location: "Jakarta",
+    ip: "10.0.0.1/22",
     vxlan: 4,
     ospf: 5,
-    email: 'jane.cooper@example.com',
+    email: "jane.cooper@example.com",
   },
-  // More people...
+  // More routers...
 ];
 
 export default function Table({
@@ -24,6 +26,32 @@ export default function Table({
   handlerAddOSPFandVlan,
   handlerDetailDataOSPFOrVXLAN,
 }) {
+  const [routers, setRouters] = useState(routersInit);
+  useEffect(() => {
+    const callServer = async () => {
+      const options = {
+        method: "GET",
+        url: "http://localhost:8000/inventory/router",
+        headers: {
+          "x-auth-token": localStorage.getItem("token"),
+        },
+      };
+
+      const { data } = await axios.request(options);
+      const fetchedRouter = data.map((rtr) => {
+        return {
+          name: rtr.routerName,
+          location: rtr.role,
+          ip: rtr.management,
+          vxlan: 4,
+          ospf: 5,
+          email: "jane.cooper@example.com",
+        };
+      });
+      setRouters(fetchedRouter);
+    };
+    callServer();
+  });
   return (
     <>
       <div className="px-4 md:px-10 py-4 md:py-7 bg-gray-100 rounded-tl-lg rounded-tr-lg">
@@ -34,7 +62,8 @@ export default function Table({
           <div>
             <button
               onClick={handlerOpenModal}
-              className="inline-flex sm:ml-3 mt-4 sm:mt-0 items-center justify-center gap-2 px-6 py-3 bg-apps-primary hover:bg-blue-600 focus:outline-none rounded">
+              className="inline-flex sm:ml-3 mt-4 sm:mt-0 items-center justify-center gap-2 px-6 py-3 bg-apps-primary hover:bg-blue-600 focus:outline-none rounded"
+            >
               <PlusSmIcon className="h-5 w-5 text-white" />
               <p className="text-sm font-medium leading-none text-white">
                 Add Node to Fabric
@@ -52,27 +81,32 @@ export default function Table({
                   <tr>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
                       No
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
                       Node
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
                       Tunnel IP
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
                       VXLAN List
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
                       OSPF Network Advertisement
                     </th>
                     <th scope="col" className="relative px-6 py-3">
@@ -81,8 +115,8 @@ export default function Table({
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {people.map((person, index) => (
-                    <tr key={person.email}>
+                  {routers.map((router, index) => (
+                    <tr key={router.email}>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {index + 1}
                       </td>
@@ -93,25 +127,26 @@ export default function Table({
                           </div>
                           <div className="ml-4">
                             <div className="text-base font-medium text-gray-900">
-                              {person.name}
+                              {router.name}
                             </div>
                             <div className="text-sm text-gray-500">
-                              {person.location}
+                              {router.location}
                             </div>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="font-medium text-gray-700">
-                          {person.ip}
+                          {router.ip}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-gray-500">
                         <button
                           onClick={() =>
-                            handlerDetailDataOSPFOrVXLAN(4, 'VXLAN')
+                            handlerDetailDataOSPFOrVXLAN(4, "VXLAN")
                           }
-                          className="flex gap-1 items-center text-blue-600 hover:text-blue-900 font-medium border-b border-blue-600 hover:border-blue-900 pb-1">
+                          className="flex gap-1 items-center text-blue-600 hover:text-blue-900 font-medium border-b border-blue-600 hover:border-blue-900 pb-1"
+                        >
                           <ViewGridAddIcon className="h-4 w-4 " />
                           View VXLAN
                         </button>
@@ -119,9 +154,10 @@ export default function Table({
                       <td className="px-6 py-4 whitespace-nowrap text-gray-500">
                         <button
                           onClick={() =>
-                            handlerDetailDataOSPFOrVXLAN(6, 'OSPF')
+                            handlerDetailDataOSPFOrVXLAN(6, "OSPF")
                           }
-                          className="flex gap-1 items-center text-blue-600 hover:text-blue-900 font-medium border-b border-blue-600 hover:border-blue-900 pb-1">
+                          className="flex gap-1 items-center text-blue-600 hover:text-blue-900 font-medium border-b border-blue-600 hover:border-blue-900 pb-1"
+                        >
                           <ViewGridAddIcon className="h-4 w-4 " />
                           View OSPF
                         </button>
@@ -133,17 +169,19 @@ export default function Table({
                         </button>
                         <button
                           onClick={() =>
-                            handlerAddOSPFandVlan(person.name, 'OSPF')
+                            handlerAddOSPFandVlan(router.name, "OSPF")
                           }
-                          className="flex gap-1 items-center text-blue-600 hover:text-blue-900 font-medium">
+                          className="flex gap-1 items-center text-blue-600 hover:text-blue-900 font-medium"
+                        >
                           <PlusSmIcon className="h-4 w-4 " />
                           Add OSPF
                         </button>
                         <button
                           onClick={() =>
-                            handlerAddOSPFandVlan(person.name, 'VXLAN')
+                            handlerAddOSPFandVlan(router.name, "VXLAN")
                           }
-                          className="flex gap-1 items-center text-blue-600 hover:text-blue-900 font-medium">
+                          className="flex gap-1 items-center text-blue-600 hover:text-blue-900 font-medium"
+                        >
                           <PlusSmIcon className="h-4 w-4 " />
                           Add VXLAN
                         </button>

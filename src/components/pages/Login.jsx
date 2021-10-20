@@ -44,7 +44,7 @@ const Login = () => {
           for="username"
           className="block text-sm font-medium text-gray-700 w-24"
         >
-          username
+          Email
         </label>
         <div className="mt-1 sm:mt-0 w-full">
           <input
@@ -83,7 +83,7 @@ const Login = () => {
       >
         Log Me In
       </button>
-      <p>{error}</p>
+      <p className="Text-red 400 text-sm font-medium tracking-wide">{error}</p>
     </div>
   );
 };
