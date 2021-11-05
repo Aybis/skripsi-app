@@ -1,10 +1,14 @@
 import { EyeIcon, EyeOffIcon } from '@heroicons/react/solid';
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import ToastHandler from '../../helpers/toast';
+import { getProfile } from '../../store/actions/user';
 import LoadingIcon from '../atoms/LoadingIcon';
 
 // history untuk set url digunakan untuk redirect maupun backpage
 const Login = ({ history }) => {
+  const dispatch = useDispatch();
   // variable loading ketika proses login
   const [isLoading, setisLoading] = useState(false);
   // var icon eye untuk kondisi ketika type password menjadi text begitu sebaliknya
@@ -41,15 +45,60 @@ const Login = ({ history }) => {
   const handlerSubmit = (event) => {
     event.preventDefault();
 
+    // fetch('https://87e9-124-158-189-62.ngrok.io/auth/login', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Access: '',
+    //   },
+    //   body: '{"email":"admin@admin.com","password":"12345"}',
+    // })
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     // store data token to local storage
+    //     localStorage.setItem(
+    //       'VMAT:user',
+    //       JSON.stringify({
+    //         email: form.email,
+    //         token: data.token,
+    //       }),
+    //     );
+    //   })
+    //   .catch((err) => {
+    //     console.error(err);
+    //   });
+
+    dispatch(getProfile({ name: form.email, token: 'testingtoken' }));
+
     // store data token to local storage
     localStorage.setItem(
       'VMAT:user',
       JSON.stringify({
-        email: form.email,
+        name: form.email,
+        token: 'testingTokendoang',
       }),
     );
 
+    // store data user to cookies
+    const userCookie = {
+      name: form.email,
+      token: 'testingTokendoang',
+    };
+
+    /**
+     * set expires user cookies
+     * date + 7 * 24 * 60 * 60 * 1000
+     * meaning
+     * tanggal + 7hari * 24jam * 60menit * 60detik * 1000ms
+     */
+    const expires = new Date(new Date().getTime() + 1 * 24 * 60 * 60 * 1000);
+
+    document.cookie = `VMAT:user=${JSON.stringify(
+      userCookie,
+    )}; expires=${expires.toUTCString()}; path:/`;
+
     const redirect = localStorage.getItem('VMAT:redirect');
+    ToastHandler('success', 'Login Berhasil');
 
     setisLoading(true);
     setTimeout(() => {
@@ -64,7 +113,7 @@ const Login = ({ history }) => {
     return () => {
       setDidMount(false);
     };
-  }, []);
+  }, [dispatch]);
 
   if (!didMount) {
     return null;
@@ -73,7 +122,7 @@ const Login = ({ history }) => {
   return (
     <div className="flex justify-center items-center min-h-screen h-full bg-warmGray-50">
       <div className="relative bg-white rounded-xl shadow-lg px-8 py-4">
-        <div className="mt-4 mb-12">
+        <div className="mt-4 mb-6">
           <h1 className="text-2xl font-bold tracking-wide text-warmGray-800">
             Login
           </h1>

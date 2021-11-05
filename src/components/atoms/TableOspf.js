@@ -8,7 +8,7 @@ import React from 'react';
 
 function TableOspf({ handlerOpenModal, handlerClickData, data, title }) {
   return (
-    <>
+    <div className="mt-8">
       <div className="px-4 md:px-10 py-4 md:py-7 bg-gray-100 rounded-tl-lg rounded-tr-lg">
         <div className="sm:flex items-center justify-between">
           <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-normal text-gray-800">
@@ -82,13 +82,13 @@ function TableOspf({ handlerOpenModal, handlerClickData, data, title }) {
                   </div>
                 </td>
                 <td className="px-7 2xl:px-0 flex flex-col gap-2 py-2">
-                  <button className="flex gap-1 items-center text-green-500 hover:text-green-900 font-medium">
+                  <button className="flex gap-1 items-center text-green-600 hover:text-green-700 font-medium">
                     <ClipboardListIcon className="h-4 w-4 " />
-                    View Bridge
+                    View
                   </button>
                   <button className="flex gap-1 items-center text-red-600 hover:text-red-900 font-medium">
                     <TrashIcon className="h-4 w-4 " />
-                    Delete Bridge
+                    Delete
                   </button>
                 </td>
               </tr>
@@ -96,7 +96,7 @@ function TableOspf({ handlerOpenModal, handlerClickData, data, title }) {
           </tbody>
         </table>
       </div>
-    </>
+    </div>
   );
 }
 

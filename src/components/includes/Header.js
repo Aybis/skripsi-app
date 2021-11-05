@@ -2,7 +2,9 @@ import { Menu, Transition } from '@headlessui/react';
 import { BellIcon, MenuAlt2Icon } from '@heroicons/react/outline';
 import { SearchIcon } from '@heroicons/react/solid';
 import { Fragment } from 'react';
+import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import ToastHandler from '../../helpers/toast';
 
 const userNavigation = [
   { name: 'Your Profile', href: 'profile' },
@@ -11,10 +13,17 @@ const userNavigation = [
 ];
 
 const handlerLogOut = (val) => {
-  console.log(val);
   if (val === 'logout') {
+    // remove cookies
+    document.cookie.split(';').forEach(function (c) {
+      document.cookie = c
+        .replace(/^ +/, '')
+        .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
+    });
     // remove token
     localStorage.removeItem('VMAT:user');
+    ToastHandler('success', 'Logout Berhasil');
+
     // redirect link
     <Redirect push to="/login" />;
     // reload page
@@ -27,6 +36,8 @@ function classNames(...classes) {
 }
 
 export default function Header({ handlerSidebar }) {
+  const USER = useSelector((state) => state.user);
+
   return (
     <div className="relative z-10 flex-shrink-0 h-16 bg-white border-b border-gray-200 flex">
       <button
@@ -75,7 +86,7 @@ export default function Header({ handlerSidebar }) {
                   alt=""
                 />
                 <p className="text-sm ml-2 font-semibold text-gray-600 hidden lg:block">
-                  Abdul Muchtar Astria
+                  {USER?.name ? USER.name : 'Abdul Muchtar Astria'}
                 </p>
               </Menu.Button>
             </div>
