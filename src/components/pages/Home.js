@@ -1,4 +1,3 @@
-import Content from '../includes/Content';
 import {
   ChatAltIcon,
   DocumentReportIcon,
@@ -9,9 +8,10 @@ import {
   TrashIcon,
   UsersIcon,
 } from '@heroicons/react/outline';
-import Layout from '../includes/Layout';
-import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import Content from '../includes/Content';
+import Layout from '../includes/Layout';
 
 const features = [
   {

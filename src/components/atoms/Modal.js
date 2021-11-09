@@ -1,16 +1,22 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { Dialog, Transition } from '@headlessui/react';
-import { Fragment, useState } from 'react';
+import { Fragment } from 'react';
+import LoadingIcon from './LoadingIcon';
 
-export default function Modal({ show, handlerShow, title }) {
-  const [open, setOpen] = useState(true);
-
+export default function Modal({
+  show,
+  handlerShow,
+  title,
+  handlerSubmit,
+  handlerOnChange,
+  isSubmit,
+}) {
   return (
-    <Transition.Root show={open} as={Fragment}>
+    <Transition.Root show={show} as={Fragment}>
       <Dialog
         as="div"
         className="fixed z-10 inset-0 overflow-y-auto"
-        onClose={setOpen}>
+        onClose={handlerShow}>
         <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
           <Transition.Child
             as={Fragment}
@@ -45,7 +51,7 @@ export default function Modal({ show, handlerShow, title }) {
                     className="text-2xl leading-6 font-medium text-warmGray-900 border-b pb-6 -mt-4">
                     Deploy Fabric
                   </Dialog.Title>
-                  <div className="mt-6">
+                  <form onSubmit={handlerSubmit} className="mt-6">
                     <div className="flex flex-col gap-4">
                       <div className="mt-1 flex gap-4">
                         <label
@@ -56,15 +62,16 @@ export default function Modal({ show, handlerShow, title }) {
                         <div className="flex flex-col w-1/2">
                           <input
                             type="text"
-                            name="first-name"
-                            id="first-name"
-                            autoComplete="given-name"
+                            name="ipAddressUnderlay"
                             placeholder="192.168.1.0/24"
+                            onChange={handlerOnChange}
                             className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full  sm:text-sm border-gray-300 placeholder-gray-400 font-medium placeholder-opacity-80 rounded-md tracking-wide"
                           />
                           <button
-                            onClick={() => setOpen(false)}
-                            className="flex w-36 mt-4 justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
+                            type="submit"
+                            disabled={isSubmit}
+                            className="flex w-auto mt-4 justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
+                            {isSubmit && <LoadingIcon />}
                             Deploy Underlay
                           </button>
 
@@ -81,7 +88,7 @@ export default function Modal({ show, handlerShow, title }) {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </form>
                 </div>
               </div>
             </div>

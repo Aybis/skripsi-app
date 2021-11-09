@@ -7,6 +7,11 @@ export default {
 
   // fabric end point
   setUnderlay: (data) => axios.post('inventory/setupunderlay', data),
+  getNodes: () => axios.get('inventory/router'),
+  addNode: (data) => axios.post('inventory/', data),
+  deleteNodes: (data) => axios.post('inventory/load-init', data),
+  viewVxlanById: (data) =>
+    axios.get(`/configure/member-vxlan-of-nodes/${data}`),
 
   // vxlan end point
   addBridgeVxlan: (data) =>

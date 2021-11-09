@@ -1,29 +1,21 @@
 import {
-  ClipboardListIcon,
   PlusSmIcon,
   ServerIcon,
+  TrashIcon,
   ViewGridAddIcon,
 } from '@heroicons/react/outline';
-
-/* This example requires Tailwind CSS v2.0+ */
-const people = [
-  {
-    name: 'JKT-01-GW',
-    location: 'Jakarta',
-    ip: '10.0.0.1/22',
-    vxlan: 4,
-    ospf: 5,
-    email: 'jane.cooper@example.com',
-  },
-  // More people...
-];
+import { useSelector } from 'react-redux';
+import LoadingIcon from './LoadingIcon';
 
 export default function Table({
   title,
   handlerOpenModal,
-  handlerAddOSPFandVlan,
   handlerDetailDataOSPFOrVXLAN,
+  handlerViewVxlanById,
+  handlerDelete,
 }) {
+  const FABRIC = useSelector((state) => state.fabric);
+
   return (
     <>
       <div className="px-4 md:px-10 py-4 md:py-7 bg-gray-100 rounded-tl-lg rounded-tr-lg">
@@ -63,7 +55,7 @@ export default function Table({
                     <th
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Tunnel IP
+                      Tunnel
                     </th>
                     <th
                       scope="col"
@@ -75,81 +67,74 @@ export default function Table({
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       OSPF Network Advertisement
                     </th>
-                    <th scope="col" className="relative px-6 py-3">
-                      <span className="sr-only">Edit</span>
-                    </th>
+                    <th scope="col" className="relative px-6 py-3"></th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {people.map((person, index) => (
-                    <tr key={person.email}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {index + 1}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="flex-shrink-0 h-10 w-10">
-                            <ServerIcon className="h-8 w-8 text-warmGray-700" />
-                          </div>
-                          <div className="ml-4">
-                            <div className="text-base font-medium text-gray-900">
-                              {person.name}
+                  {FABRIC.dataNodes.length > 0 ? (
+                    FABRIC?.dataNodes?.map((item, index) => (
+                      <tr key={item._id}>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {index + 1}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="flex-shrink-0 h-10 w-10">
+                              <ServerIcon className="h-8 w-8 text-warmGray-700" />
                             </div>
-                            <div className="text-sm text-gray-500">
-                              {person.location}
+                            <div className="ml-4">
+                              <div className="text-base font-medium text-gray-900">
+                                {item.routerName}
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                {item.management}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="font-medium text-gray-700">
-                          {person.ip}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-500">
-                        <button
-                          onClick={() =>
-                            handlerDetailDataOSPFOrVXLAN(4, 'VXLAN')
-                          }
-                          className="flex gap-1 items-center text-blue-600 hover:text-blue-900 font-medium border-b border-blue-600 hover:border-blue-900 pb-1">
-                          <ViewGridAddIcon className="h-4 w-4 " />
-                          View VXLAN
-                        </button>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-500">
-                        <button
-                          onClick={() =>
-                            handlerDetailDataOSPFOrVXLAN(6, 'OSPF')
-                          }
-                          className="flex gap-1 items-center text-blue-600 hover:text-blue-900 font-medium border-b border-blue-600 hover:border-blue-900 pb-1">
-                          <ViewGridAddIcon className="h-4 w-4 " />
-                          View OSPF
-                        </button>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-left text-sm font-medium grid grid-row-3 gap-1">
-                        <button className="flex gap-1 items-center text-green-400 hover:text-green-900 font-medium">
-                          <ClipboardListIcon className="h-4 w-4 " />
-                          View Fabric
-                        </button>
-                        <button
-                          onClick={() =>
-                            handlerAddOSPFandVlan(person.name, 'OSPF')
-                          }
-                          className="flex gap-1 items-center text-blue-600 hover:text-blue-900 font-medium">
-                          <PlusSmIcon className="h-4 w-4 " />
-                          Add OSPF
-                        </button>
-                        <button
-                          onClick={() =>
-                            handlerAddOSPFandVlan(person.name, 'VXLAN')
-                          }
-                          className="flex gap-1 items-center text-blue-600 hover:text-blue-900 font-medium">
-                          <PlusSmIcon className="h-4 w-4 " />
-                          Add VXLAN
-                        </button>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="font-medium text-gray-700">
+                            {item.tunnel}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-gray-500">
+                          <button
+                            onClick={() => handlerViewVxlanById(item)}
+                            className="flex gap-1 items-center text-blue-600 hover:text-blue-900 font-medium border-b border-blue-600 hover:border-blue-900 pb-1">
+                            <ViewGridAddIcon className="h-4 w-4 " />
+                            View VXLAN
+                          </button>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-gray-500">
+                          <button
+                            onClick={() =>
+                              handlerDetailDataOSPFOrVXLAN(6, 'OSPF')
+                            }
+                            className="flex gap-1 items-center text-blue-600 hover:text-blue-900 font-medium border-b border-blue-600 hover:border-blue-900 pb-1">
+                            <ViewGridAddIcon className="h-4 w-4 " />
+                            View OSPF
+                          </button>
+                        </td>
+                        <td className="px-6 flex justify-center items-center py-4 whitespace-nowrap text-left text-sm font-medium gap-1">
+                          <button
+                            onClick={() => handlerDelete(item)}
+                            className="flex gap-1 items-center text-red-600 hover:text-red-900 font-medium">
+                            <TrashIcon className="h-4 w-4 " />
+                            Delete Node
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan="6"
+                        className="text-center text-gray-500 font-semibold flex justify-center items-center w-full">
+                        <LoadingIcon color="text-apps-primary ml-2" />
+                        Data Kosong{' '}
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

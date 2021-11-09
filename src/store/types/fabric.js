@@ -1,3 +1,5 @@
-export const IS_DEPLOY = 'IS_DEPLOY';
-export const LIST_INVENTORY = 'LIST_INVENTORY';
-export const IS_RESET = 'IS_RESET';
+export const LIST_NODE_FABRICS = 'LIST_NODE_FABRICS';
+export const LIST_VXLAN_BY_FABRIC = 'LIST_VXLAN_BY_FABRIC';
+export const LIST_OSPF_BY_FABRIC = 'LIST_OSPF_BY_FABRIC';
+export const STATUS_DATA = 'STATUS_DATA';
+export const MESSAGE_DATA = 'MESSAGE_DATA';

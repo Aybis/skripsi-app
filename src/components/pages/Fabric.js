@@ -1,158 +1,195 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import vmat from '../../config/api/vmat';
+import { setTokenHeader } from '../../config/axios';
+import ToastHandler from '../../helpers/toast';
+import {
+  fetchListNodes,
+  fetchVxlanByFabric,
+  messageData,
+} from '../../store/actions/fabric';
 import ChildTableFabric from '../atoms/ChildTableFabric';
+import FormAddFabric from '../atoms/FormAddFabric';
 import Modal from '../atoms/Modal';
+import ModalDelete from '../atoms/ModalDelete';
 import ModalWithClose from '../atoms/ModalWithClose';
 import Table from '../atoms/Table';
 import Content from '../includes/Content';
 import Layout from '../includes/Layout';
 
 export default function Fabric() {
-  const [show, setshow] = useState(true);
-  const [modalAddOspfOrVlan, setmodalAddOspfOrVlan] = useState(false);
+  const FABRIC = useSelector((state) => state.fabric);
+  const dispatch = useDispatch();
+  const [show, setshow] = useState(false);
+  const [showListVxlan, setshowListVxlan] = useState(false);
+  const [titleModalVxlan, settitleModalVxlan] = useState('VXLAN');
+  const [showModalDelete, setshowModalDelete] = useState(false);
+  const [loadingDelete, setloadingDelete] = useState(false);
+  const [dataDelete, setdataDelete] = useState({
+    id: '',
+    name: '',
+  });
+
   const [titleModalAdd, settitleModalAdd] = useState('');
   const [modalAddFabric, setmodalAddFabric] = useState(false);
-  const [showModalDetailData, setshowModalDetailData] = useState(false);
-  const [getListDetailData, setgetListDetailData] = useState(0);
+  const [isLoading, setisLoading] = useState(false);
+  const [form, setform] = useState({
+    ipAddressUnderlay: '',
+  });
+
+  const handlerOnChange = (event) => {
+    setform({
+      ...form,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const handlerSetNewTunnel = (event) => {
+    event.preventDefault();
+    setisLoading(true);
+    setTokenHeader();
+
+    vmat
+      .setUnderlay(form)
+      .then((response) => {
+        setisLoading(false);
+        ToastHandler('success', response.data.message);
+      })
+      .catch((err) => {
+        setisLoading(false);
+        ToastHandler(
+          'error',
+          err.response.data.message ?? 'Something happenned',
+        );
+      });
+  };
+
+  const handlerGetListNode = () => {
+    setTokenHeader();
+
+    vmat
+      .getNodes()
+      .then((response) => {
+        dispatch(fetchListNodes(response.data.message));
+        dispatch(messageData('ok'));
+      })
+      .catch((err) => {
+        console.log(err.response);
+        dispatch(messageData('error'));
+
+        ToastHandler(
+          'error',
+          err.response.data.message ?? 'Something happenned',
+        );
+      });
+  };
+
+  const handlerDeleteNode = (data) => {
+    setTokenHeader();
+    setloadingDelete(true);
+    vmat
+      .deleteNodes({ id: data.id })
+      .then((response) => {
+        setloadingDelete(false);
+        ToastHandler('success', response.data.message);
+        setshowModalDelete(false);
+      })
+      .catch((err) => {
+        setloadingDelete(false);
+        ToastHandler(
+          'error',
+          err?.response?.data?.message ?? 'Something happened',
+        );
+      });
+  };
+
+  const handlerModalDelete = (data) => {
+    setshowModalDelete(true);
+    setdataDelete({
+      id: data._id,
+      name: data.routerName,
+    });
+  };
+
+  const handlerGetListVxlanById = (data) => {
+    setshowListVxlan(true);
+    setTokenHeader();
+    vmat
+      .viewVxlanById(data._id)
+      .then((response) => {
+        dispatch(fetchVxlanByFabric(response.data.message));
+        settitleModalVxlan(data.routerName);
+      })
+      .catch((err) => {
+        ToastHandler('err', err?.response?.message ?? 'Something happened');
+      });
+  };
 
   const handlerAddFabric = () => {
     setmodalAddFabric(true);
-    settitleModalAdd('Add Node to Fabric');
+    settitleModalAdd('Associate Node to Fabric');
   };
 
-  const handlerAddOSPFandVlan = (item, name) => {
-    setmodalAddOspfOrVlan(true);
-    settitleModalAdd(name);
-  };
-
-  const handlerDetailDataOSPFOrVXLAN = (item, name) => {
-    settitleModalAdd(name);
-    setgetListDetailData(item);
-    setshowModalDetailData(true);
-  };
-
-  const handlerSubmit = (event) => {
-    event.preventDefault();
-    setmodalAddFabric(false);
-  };
+  useEffect(() => {
+    handlerGetListNode();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
 
   return (
     <Layout>
       <Content title="Fabric">
         {/* Modal Deploy  */}
-        <Modal show={show} handlerShow={() => setshow(false)} />
+        <Modal
+          show={show}
+          handlerOnChange={handlerOnChange}
+          handlerShow={() => setshow(false)}
+          handlerSubmit={handlerSetNewTunnel}
+          isSubmit={isLoading}
+        />
 
         {/* Modal Add Fabric  */}
         <ModalWithClose
           show={modalAddFabric}
           handlerModal={() => setmodalAddFabric(false)}
           title={titleModalAdd}>
-          <form onSubmit={handlerSubmit} className="mt-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-2 sm:gap-4 sm:items-start">
-                <label
-                  htmlFor="username"
-                  className="block text-sm font-medium text-gray-700 w-24">
-                  Node
-                </label>
-                <div className="mt-1 sm:mt-0 w-full">
-                  <input
-                    type="text"
-                    name="bridge_domain"
-                    id="bridge"
-                    className="flex-1 block w-full focus:ring-blue-500 focus:border-blue-500 min-w-0 rounded-md sm:text-sm border-gray-300"
-                  />
-                </div>
-              </div>
-              <div className="flex flex-col gap-2 sm:gap-4 sm:items-start">
-                <label
-                  htmlFor="username"
-                  className="block text-sm font-medium text-gray-700 w-24">
-                  Tunnel
-                </label>
-                <div className="mt-1 sm:mt-0 w-full">
-                  <input
-                    type="text"
-                    name="bridge_domain"
-                    id="bridge"
-                    className="flex-1 block w-full focus:ring-blue-500 focus:border-blue-500 min-w-0 rounded-md sm:text-sm border-gray-300"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              className="mt-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-              Add Fabric
-            </button>
-          </form>
+          <FormAddFabric stateModal={setmodalAddFabric} />
         </ModalWithClose>
 
-        {/* Modal Add OSPF or VXLAN */}
+        {/* Modal view Data Vxlan */}
         <ModalWithClose
-          show={modalAddOspfOrVlan}
-          handlerModal={() => setmodalAddOspfOrVlan(false)}
-          title={`Add ${titleModalAdd}`}>
-          <form onSubmit={handlerSubmit} className="mt-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-2 sm:gap-4 sm:items-start">
-                <label
-                  htmlFor="username"
-                  className="block text-sm font-medium text-gray-700 w-24">
-                  Subnet
-                </label>
-                <div className="mt-1 sm:mt-0 w-full">
-                  <input
-                    type="text"
-                    name="bridge_domain"
-                    id="bridge"
-                    className="flex-1 block w-full focus:ring-blue-500 focus:border-blue-500 min-w-0 rounded-md sm:text-sm border-gray-300"
-                  />
-                </div>
-              </div>
-              <div className="flex flex-col gap-2 sm:gap-4 sm:items-start">
-                <label
-                  htmlFor="username"
-                  className="block text-sm font-medium text-gray-700 w-24">
-                  Description
-                </label>
-                <div className="mt-1 sm:mt-0 w-full">
-                  <input
-                    type="text"
-                    name="bridge_domain"
-                    id="bridge"
-                    className="flex-1 block w-full focus:ring-blue-500 focus:border-blue-500 min-w-0 rounded-md sm:text-sm border-gray-300"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              className="mt-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-              Add {titleModalAdd}
-            </button>
-          </form>
+          show={showListVxlan}
+          handlerModal={() => setshowListVxlan(false)}
+          title={`List ${titleModalVxlan}`}>
+          <ChildTableFabric data={FABRIC.dataVxlanByFabric} />
         </ModalWithClose>
 
-        {/* Modal List Data OSPF or VXLAN */}
-        <ModalWithClose
-          show={showModalDetailData}
-          handlerModal={() => setshowModalDetailData(false)}
-          title={`List ${titleModalAdd}`}>
-          <ChildTableFabric data={getListDetailData} name={titleModalAdd} />
-        </ModalWithClose>
+        <ModalDelete
+          isShow={showModalDelete}
+          handlerClose={() => setshowModalDelete(false)}
+          data={dataDelete}
+          isSubmit={loadingDelete}
+          handlerDelete={handlerDeleteNode}
+        />
 
         <div className="w-full mt-8">
-          <div className="w-full text-left mb-6">
+          <div className="w-full flex justify-between items-center mb-10">
             <h2 className="text-xl font-semibold text-gray-900">
               List Manage Fabric
             </h2>
+            {FABRIC.dataNodes.length > 0 ? (
+              ''
+            ) : (
+              <button
+                onClick={() => setshow(true)}
+                className="bg-apps-primary rounded-md px-4 py-2 text-white hover:bg-blue-700 transition-all duration-300 ease-in-out font-medium">
+                Delpoy Tunnel
+              </button>
+            )}
           </div>
           <Table
             handlerOpenModal={() => handlerAddFabric()}
-            handlerAddOSPFandVlan={handlerAddOSPFandVlan}
-            handlerDetailDataOSPFOrVXLAN={handlerDetailDataOSPFOrVXLAN}
+            handlerViewVxlanById={handlerGetListVxlanById}
+            handlerDelete={handlerModalDelete}
           />
         </div>
       </Content>

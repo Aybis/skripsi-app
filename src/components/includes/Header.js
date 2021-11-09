@@ -37,7 +37,6 @@ function classNames(...classes) {
 
 export default function Header({ handlerSidebar }) {
   const USER = useSelector((state) => state.user);
-
   return (
     <div className="relative z-10 flex-shrink-0 h-16 bg-white border-b border-gray-200 flex">
       <button
@@ -78,15 +77,15 @@ export default function Header({ handlerSidebar }) {
           {/* Profile dropdown */}
           <Menu as="div" className="ml-3 relative">
             <div>
-              <Menu.Button className="max-w-xs flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              <Menu.Button className="max-w-xs p-1 flex items-center text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 <span className="sr-only">Open user menu</span>
                 <img
-                  className="h-8 w-8 rounded-full"
-                  src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80"
+                  className="h-10 w-10 rounded-full"
+                  src={`https://ui-avatars.com/api/?name=${USER?.email}&background=F3f3f3&color=000&format=svg`}
                   alt=""
                 />
                 <p className="text-sm ml-2 font-semibold text-gray-600 hidden lg:block">
-                  {USER?.name ? USER.name : 'Abdul Muchtar Astria'}
+                  {USER?.email ? USER.email : 'Abdul Muchtar Astria'}
                 </p>
               </Menu.Button>
             </div>

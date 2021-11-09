@@ -12,6 +12,7 @@ import Login from './components/pages/Login';
 import Ospf from './components/pages/Ospf';
 import Vxlan from './components/pages/Vxlan';
 import { getProfile } from './store/actions/user';
+import jwt_decode from 'jwt-decode';
 
 function App() {
   // fungsi dari redux untuk memasukkan sebuah nilai ke dalam variable yang di set pada redux pada file /types/user.js
@@ -23,7 +24,7 @@ function App() {
     if (localStorage.getItem('VMAT:user')) {
       session = JSON.parse(localStorage.getItem('VMAT:user'));
       // masukkan data user ke dalam redux user
-      dispatch(getProfile(session));
+      dispatch(getProfile(jwt_decode(session.token)));
     }
   }, [dispatch]);
 

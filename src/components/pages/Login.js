@@ -2,9 +2,11 @@ import { EyeIcon, EyeOffIcon } from '@heroicons/react/solid';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import vmat from '../../config/api/vmat';
 import ToastHandler from '../../helpers/toast';
 import { getProfile } from '../../store/actions/user';
 import LoadingIcon from '../atoms/LoadingIcon';
+import jwt_decode from 'jwt-decode';
 
 // history untuk set url digunakan untuk redirect maupun backpage
 const Login = ({ history }) => {
@@ -44,67 +46,59 @@ const Login = ({ history }) => {
   // function login submit
   const handlerSubmit = (event) => {
     event.preventDefault();
-
-    // fetch('https://87e9-124-158-189-62.ngrok.io/auth/login', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     Access: '',
-    //   },
-    //   body: '{"email":"admin@admin.com","password":"12345"}',
-    // })
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     // store data token to local storage
-    //     localStorage.setItem(
-    //       'VMAT:user',
-    //       JSON.stringify({
-    //         email: form.email,
-    //         token: data.token,
-    //       }),
-    //     );
-    //   })
-    //   .catch((err) => {
-    //     console.error(err);
-    //   });
-
-    dispatch(getProfile({ name: form.email, token: 'testingtoken' }));
-
-    // store data token to local storage
-    localStorage.setItem(
-      'VMAT:user',
-      JSON.stringify({
-        name: form.email,
-        token: 'testingTokendoang',
-      }),
-    );
-
-    // store data user to cookies
-    const userCookie = {
-      name: form.email,
-      token: 'testingTokendoang',
-    };
-
-    /**
-     * set expires user cookies
-     * date + 7 * 24 * 60 * 60 * 1000
-     * meaning
-     * tanggal + 7hari * 24jam * 60menit * 60detik * 1000ms
-     */
-    const expires = new Date(new Date().getTime() + 1 * 24 * 60 * 60 * 1000);
-
-    document.cookie = `VMAT:user=${JSON.stringify(
-      userCookie,
-    )}; expires=${expires.toUTCString()}; path:/`;
-
-    const redirect = localStorage.getItem('VMAT:redirect');
-    ToastHandler('success', 'Login Berhasil');
-
     setisLoading(true);
-    setTimeout(() => {
-      setisLoading(false);
-      history.push(redirect || '/');
-    }, 500);
+
+    vmat
+      .login(form)
+      .then((response) => {
+        // convert jwt
+        const user = jwt_decode(response.data.token);
+        // masukkan data user kedalam redux profile
+        dispatch(getProfile(jwt_decode(response.data.token)));
+        // store data token to local storage
+        localStorage.setItem(
+          'VMAT:user',
+          JSON.stringify({
+            token: response.data.token,
+            email: user.email,
+          }),
+        );
+
+        // store data user to cookies
+        const userCookie = {
+          email: user.email,
+          user_id: user._id,
+        };
+
+        /**
+         * set expires user cookies
+         * date + 7 * 24 * 60 * 60 * 1000
+         * meaning
+         * tanggal + 7hari * 24jam * 60menit * 60detik * 1000ms
+         */
+        const expires = new Date(
+          new Date().getTime() + 1 * 24 * 60 * 60 * 1000,
+        );
+        document.cookie = `VMAT:user=${JSON.stringify(
+          userCookie,
+        )}; expires=${expires.toUTCString()}; path:/`;
+        // get url before login
+        const redirect = localStorage.getItem('VMAT:redirect');
+        // show toast success
+        ToastHandler('success', 'Login Berhasil');
+        // turn of state loading
+        setisLoading(false);
+        // redirect berdasarkan url redirect yang didapatkan
+        history.push(redirect || '/');
+      })
+      .catch((err) => {
+        console.log(err);
+        setisLoading(false);
+        ToastHandler(
+          'error',
+          err.response.data.message ?? 'Something happened',
+        );
+      });
   };
 
   // sama seperti componentDidMount namun digunakan untuk mematikan seluruh proses halaman login ketika berpindah halaman
@@ -175,8 +169,7 @@ const Login = ({ history }) => {
           <div className=" bg-gray-50 text-right mt-4 mb-8">
             <button
               type="submit"
-              className="bg-blue-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 w-full
-             tracking-wide">
+              className="bg-blue-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 w-full tracking-wide">
               {isLoading && <LoadingIcon />}
               Login
             </button>
