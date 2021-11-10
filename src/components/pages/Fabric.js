@@ -176,15 +176,15 @@ export default function Fabric() {
             <h2 className="text-xl font-semibold text-gray-900">
               List Manage Fabric
             </h2>
-            {/* {FABRIC.dataNodes.length > 0 ? (
+            {FABRIC.dataNodes.length > 0 ? (
               ''
-            ) : ( */}
-            <button
-              onClick={() => setshow(true)}
-              className="bg-apps-primary rounded-md px-4 py-2 text-white hover:bg-blue-700 transition-all duration-300 ease-in-out font-medium">
-              Delpoy Tunnel
-            </button>
-            {/* )} */}
+            ) : (
+              <button
+                onClick={() => setshow(true)}
+                className="bg-apps-primary rounded-md px-4 py-2 text-white hover:bg-blue-700 transition-all duration-300 ease-in-out font-medium">
+                Delpoy Tunnel
+              </button>
+            )}
           </div>
           <Table
             handlerOpenModal={() => handlerAddFabric()}
