@@ -58,14 +58,14 @@ export default function Sidebar() {
                   className={classNames(
                     location.pathname === item.href
                       ? 'bg-gray-100 text-apps-primary'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-apps-primary',
+                      : 'text-gray-400 hover:bg-gray-50 hover:text-apps-primary',
                     'group rounded-md py-3 px-4 flex items-center font-semibold tracking-wide transition-all duration-300 ease-in-out',
                   )}>
                   <item.icon
                     className={classNames(
                       location.pathname === item.href
                         ? 'text-apps-primary'
-                        : 'text-gray-400 group-hover:text-apps-primary',
+                        : 'text-gray-300 group-hover:text-apps-primary',
                       'mr-3 flex-shrink-0 h-7 w-7',
                     )}
                     aria-hidden="true"

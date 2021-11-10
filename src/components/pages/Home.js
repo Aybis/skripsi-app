@@ -1,100 +1,108 @@
-import {
-  ChatAltIcon,
-  DocumentReportIcon,
-  HeartIcon,
-  InboxIcon,
-  PencilAltIcon,
-  ReplyIcon,
-  TrashIcon,
-  UsersIcon,
-} from '@heroicons/react/outline';
+import { ServerIcon } from '@heroicons/react/outline';
+import { motion } from 'framer-motion';
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import vmat from '../../config/api/vmat';
+import { setTokenHeader } from '../../config/axios';
+import ToastHandler from '../../helpers/toast';
+import { fetchListNodes, messageData } from '../../store/actions/fabric';
 import Content from '../includes/Content';
 import Layout from '../includes/Layout';
 
-const features = [
-  {
-    name: 'Unlimited Inboxes',
-    description:
-      'Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis.',
-    icon: InboxIcon,
-  },
-  {
-    name: 'Manage Team Members',
-    description:
-      'Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis.',
-    icon: UsersIcon,
-  },
-  {
-    name: 'Spam Report',
-    description:
-      'Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis.',
-    icon: TrashIcon,
-  },
-  {
-    name: 'Compose in Markdown',
-    description:
-      'Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis.',
-    icon: PencilAltIcon,
-  },
-  {
-    name: 'Team Reporting',
-    description:
-      'Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis.',
-    icon: DocumentReportIcon,
-  },
-  {
-    name: 'Saved Replies',
-    description:
-      'Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis.',
-    icon: ReplyIcon,
-  },
-  {
-    name: 'Email Commenting',
-    description:
-      'Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis.',
-    icon: ChatAltIcon,
-  },
-  {
-    name: 'Connect with Customers',
-    description:
-      'Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis.',
-    icon: HeartIcon,
-  },
-];
-
 export default function Home() {
   const USER = useSelector((state) => state.user);
+  const FABRIC = useSelector((state) => state.fabric);
+  const dispatch = useDispatch();
 
+  const handlerGetListNode = () => {
+    setTokenHeader();
+
+    vmat
+      .getNodes()
+      .then((response) => {
+        dispatch(fetchListNodes(response.data.message));
+        dispatch(messageData('ok'));
+      })
+      .catch((err) => {
+        console.log(err.response);
+        dispatch(messageData('error'));
+
+        ToastHandler(
+          'error',
+          err.response.data.message ?? 'Something happenned',
+        );
+      });
+  };
   useEffect(() => {
+    handlerGetListNode();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [USER]);
 
   return (
     <Layout>
       <Content title="Dashboard">
-        <div className="mt-12 grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-16">
-          {features.map((feature) => (
-            <div key={feature.name}>
-              <div>
-                <span className="flex items-center justify-center h-12 w-12 rounded-md bg-warmGray-300 bg-opacity-10">
-                  <feature.icon
-                    className="h-6 w-6 text-warmGray-800"
-                    aria-hidden="true"
-                  />
-                </span>
-              </div>
-              <div className="mt-6">
-                <h3 className="text-lg font-medium text-warmGray-700">
-                  {feature.name}
-                </h3>
-                <p className="mt-2 text-base text-warmGray-400">
-                  {feature.description}
-                </p>
-              </div>
-            </div>
-          ))}
+        <div className="relative mt-12 ">
+          <div className="inline-flex gap-2">
+            <span className="text-2xl font-light text-warmGray-600">
+              IP Tunnel :{' '}
+            </span>
+            <h1 className="text-2xl font-bold text-warmGray-800 ">
+              10.10.10.0/24
+            </h1>
+          </div>
+        </div>
+        <div className="mt-8 relative">
+          <h1 className="text-lg font-semibold text-warmGray-800">
+            List Nodes
+          </h1>
+          <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-16">
+            {FABRIC.dataNodes.length > 0 ? (
+              FABRIC.dataNodes.map((item) => (
+                <motion.div
+                  whileTap={{ scale: 0.75 }}
+                  key={item._id}
+                  className="bg-white border-2 border-warmGray-200 rounded-lg p-4 group hover:shadow-lg transition-all duration-300 ease-in-out cursor-pointer">
+                  <div className="flex flex-row-reverse justify-between px-2">
+                    <span className="flex items-center justify-center h-12 w-12 rounded-md bg-warmGray-300 bg-opacity-10">
+                      <ServerIcon
+                        className="h-7 w-7 text-warmGray-800"
+                        aria-hidden="true"
+                      />
+                    </span>
+                    <div className="">
+                      <h3 className="text-lg font-bold text-warmGray-700">
+                        {item.routerName}
+                      </h3>
+                      <p className="mt-2 text-base font-light text-warmGray-500">
+                        {item.management}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 mt-6 px-2">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-sm font-medium text-warmGray-700">
+                        VXLAN
+                      </span>
+                      <span className="font-semibold text-warmGray-800">
+                        {item.interfaceList.length}
+                      </span>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <span className="text-sm font-medium text-warmGray-500">
+                        OSPF
+                      </span>
+                      <span className="font-semibold text-warmGray-800">
+                        {item.interfaceList.length}
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
+              ))
+            ) : (
+              <p>Data Kosong</p>
+            )}
+          </div>
         </div>
       </Content>
     </Layout>

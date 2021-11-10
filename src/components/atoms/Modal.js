@@ -79,11 +79,14 @@ export default function Modal({
                             This setup is for first deployment only. when its
                             deployed, there is no another way to change it
                             unless reset all fabric and deploy from beginning,
-                            chose your block ip carefully. This IP will be
-                            tunnel ip address each node on branch and one for
-                            Head Office. recomended is using block ip private
-                            address with /22 for optimal scalability and this IP
-                            should not interference by any another network
+                            chose your block ip carefully.
+                            <br />
+                            <br />
+                            This IP will be tunnel ip address each node on
+                            branch and one for Head Office. Recomended is using
+                            block ip private address with /22 for optimal
+                            scalability and this IP should not interference by
+                            any another network
                           </p>
                         </div>
                       </div>

@@ -81,11 +81,13 @@ export default function Header({ handlerSidebar }) {
                 <span className="sr-only">Open user menu</span>
                 <img
                   className="h-10 w-10 rounded-full"
-                  src={`https://ui-avatars.com/api/?name=${USER?.email}&background=F3f3f3&color=000&format=svg`}
+                  src={`https://ui-avatars.com/api/?name=${USER?.firstname}&background=F3f3f3&color=000&format=svg`}
                   alt=""
                 />
                 <p className="text-sm ml-2 font-semibold text-gray-600 hidden lg:block">
-                  {USER?.email ? USER.email : 'Abdul Muchtar Astria'}
+                  {USER?.firstname
+                    ? USER.firstname + ' ' + USER.lastname
+                    : 'Anonymous'}
                 </p>
               </Menu.Button>
             </div>

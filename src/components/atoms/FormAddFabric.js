@@ -10,10 +10,8 @@ export default function FormAddFabric({ stateModal }) {
     routerPassword: '',
     role: '',
     nhrpSecret: '',
-    bgp: {
-      localAs: 0,
-      remoteAs: 0,
-    },
+    localAs: 0,
+    remoteAs: 0,
   });
 
   const handlerOnChange = (event) => {
@@ -27,8 +25,16 @@ export default function FormAddFabric({ stateModal }) {
     event.preventDefault();
     // stateModal(false);
 
-    // setTokenHeader();
+    setTokenHeader();
     console.log(form);
+    vmat
+      .addNode(form)
+      .then((response) => {
+        console.log('succes', response);
+      })
+      .catch((err) => {
+        console.log('error', err.response);
+      });
   };
 
   return (
@@ -151,7 +157,7 @@ export default function FormAddFabric({ stateModal }) {
             <input
               type="number"
               name="localAs"
-              value={form.bgp.localAs}
+              value={form.localAs}
               onChange={handlerOnChange}
               className="max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"
             />
@@ -167,8 +173,8 @@ export default function FormAddFabric({ stateModal }) {
           <div className="mt-1 sm:mt-0 sm:col-span-2">
             <input
               type="number"
+              value={form.remoteAs}
               name="remoteAs"
-              value={form.bgp.remoteAs}
               onChange={handlerOnChange}
               className="max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"
             />

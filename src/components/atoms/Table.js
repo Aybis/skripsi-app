@@ -18,7 +18,7 @@ export default function Table({
 
   return (
     <>
-      <div className="px-4 md:px-10 py-4 md:py-7 bg-gray-100 rounded-tl-lg rounded-tr-lg">
+      <div className="px-4 py-4 bg-gray-100 rounded-tl-lg rounded-tr-lg">
         <div className="sm:flex items-center justify-between">
           <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-normal text-gray-800">
             List {title}
@@ -36,7 +36,7 @@ export default function Table({
         </div>
       </div>
       <div className="flex flex-col mt-6">
-        <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div className="overflow-x-auto">
           <div className="py-2 pb-8 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="overflow-hidden border-b border-gray-200">
               <table className="min-w-full divide-y divide-gray-100">
