@@ -13,6 +13,7 @@ import Ospf from './components/pages/Ospf';
 import Vxlan from './components/pages/Vxlan';
 import { getProfile } from './store/actions/user';
 import jwt_decode from 'jwt-decode';
+import AssociateBridge from './components/pages/AssociateBridge';
 
 function App() {
   // fungsi dari redux untuk memasukkan sebuah nilai ke dalam variable yang di set pada redux pada file /types/user.js
@@ -36,8 +37,9 @@ function App() {
         {/* Route After Middleware */}
         <Authenticated exact path="/" component={Home}></Authenticated>
         <Authenticated exact path="/fabric" component={Fabric}></Authenticated>
-        <Authenticated exact path="/ospf" component={Ospf}></Authenticated>
-        <Authenticated exact path="/vxlan" component={Vxlan}></Authenticated>
+        <Gate exact path="/ibgp" component={Ospf}></Gate>
+        <Gate exact path="/bridge" component={Vxlan}></Gate>
+        <Gate exact path="/bridge/associate" component={AssociateBridge}></Gate>
         <Authenticated exact path="/us" component={AboutUs}></Authenticated>
       </Switch>
     </Router>

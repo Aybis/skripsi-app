@@ -66,12 +66,13 @@ export default function ModalDelete({
                     className="text-lg leading-6 font-medium text-gray-900">
                     Warning
                   </Dialog.Title>
-                  <div className="mt-2">
-                    <p className="text-sm text-gray-500">
-                      Are you sure you want to delete Node{' '}
+                  <div className="mt-4 mb-8">
+                    <p className=" text-gray-500">
+                      Are you sure you want to delete block IP Address{' '}
                       <span className="font-semibold underline text-gray-800">
                         {data.name}
-                      </span>
+                      </span>{' '}
+                      ?
                     </p>
                   </div>
                 </div>

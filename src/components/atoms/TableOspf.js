@@ -1,12 +1,19 @@
 import {
-  ClipboardListIcon,
   DatabaseIcon,
+  PlusIcon,
   PlusSmIcon,
   TrashIcon,
 } from '@heroicons/react/outline';
 import React from 'react';
 
-function TableOspf({ handlerOpenModal, handlerClickData, data, title }) {
+function TableOspf({
+  handlerOpenModal,
+  handlerClickData,
+  data,
+  title,
+  handlerClickDelete,
+  handlerAssociateNode,
+}) {
   return (
     <div className="mt-8">
       <div className="px-4 md:px-10 py-4 md:py-7 bg-gray-100 rounded-tl-lg rounded-tr-lg">
@@ -28,17 +35,19 @@ function TableOspf({ handlerOpenModal, handlerClickData, data, title }) {
       </div>
       <div className="bg-white shadow px-4 md:px-10 pt-4 md:pt-7 pb-5 overflow-x-auto">
         <table className="w-full whitespace-nowrap">
-          <thead>
-            <tr className="h-16 w-full text-sm leading-none text-gray-500">
-              <th className="font-medium tracking-wide text-left pl-4">No</th>
-              <th className="font-medium tracking-wide text-left pl-12">
+          <thead className="bg-warmGray-50">
+            <tr className="h-16 w-full text-sm leading-none text-gray-500 uppercase">
+              <th className="font-semibold tracking-wide text-left pl-4">No</th>
+              <th className="font-semibold tracking-wide text-left pl-12">
                 Bridge Domain
               </th>
-              <th className="font-medium tracking-wide text-left pl-12">
+              <th className="font-semibold tracking-wide text-left pl-12">
                 Bridge ID
               </th>
-              <th className="font-medium tracking-wide text-left pl-20">VNI</th>
-              <th className="font-medium tracking-wide text-left pl-20"></th>
+              <th className="font-semibold tracking-wide text-left pl-20">
+                VNI
+              </th>
+              <th className="font-semibold tracking-wide text-left pl-20"></th>
             </tr>
           </thead>
           <tbody className="w-full">
@@ -77,18 +86,19 @@ function TableOspf({ handlerOpenModal, handlerClickData, data, title }) {
                   <p className="text-sm font-medium leading-none text-gray-800">
                     {item.vni}
                   </p>
-                  <div className="w-24 h-3 bg-gray-100 rounded-full mt-2">
-                    <div className="w-6 h-3 bg-green-400 rounded-full" />
-                  </div>
                 </td>
                 <td className="px-7 2xl:px-0 flex flex-col gap-2 py-2">
-                  <button className="flex gap-1 items-center text-green-600 hover:text-green-700 font-medium">
-                    <ClipboardListIcon className="h-4 w-4 " />
-                    View
+                  <button
+                    onClick={() => handlerAssociateNode()}
+                    className="flex gap-1 items-center text-green-600 hover:text-green-700 font-medium">
+                    <PlusIcon className="h-4 w-4 " />
+                    Associate Node
                   </button>
-                  <button className="flex gap-1 items-center text-red-600 hover:text-red-900 font-medium">
+                  <button
+                    onClick={() => handlerClickDelete()}
+                    className="flex gap-1 items-center text-red-600 hover:text-red-900 font-medium">
                     <TrashIcon className="h-4 w-4 " />
-                    Delete
+                    Delete Bridge
                   </button>
                 </td>
               </tr>

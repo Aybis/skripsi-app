@@ -9,8 +9,8 @@ import { NavLink, useLocation } from 'react-router-dom';
 const navigation = [
   { name: 'Dashboard', href: '/', icon: HomeIcon },
   { name: 'Fabric', href: '/fabric', icon: ShareIcon },
-  { name: 'VXLAN', href: '/vxlan', icon: ServerIcon },
-  { name: 'OSPF', href: '/ospf', icon: ServerIcon },
+  { name: 'Bridge Domain', href: '/bridge', icon: ServerIcon },
+  { name: 'iBGP', href: '/ibgp', icon: ServerIcon },
   { name: 'About Us', href: '/us', icon: UserGroupIcon },
 ];
 
