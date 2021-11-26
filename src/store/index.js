@@ -1,4 +1,5 @@
 import { createStore, applyMiddleware, compose } from 'redux';
+import { persistStore } from 'redux-persist';
 import thunk from 'redux-thunk';
 import rootReducer from './reducers';
 
@@ -6,7 +7,7 @@ const initialState = {};
 
 const middleware = [thunk];
 
-const store = createStore(
+export const store = createStore(
   rootReducer,
   initialState,
   compose(
@@ -17,4 +18,6 @@ const store = createStore(
   ),
 );
 
-export default store;
+export const persistor = persistStore(store);
+/* eslint import/no-anonymous-default-export: [2, {"allowObject": true}] */
+export default { store, persistor };

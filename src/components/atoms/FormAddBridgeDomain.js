@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import swal from 'sweetalert';
 import vmat from '../../config/api/vmat';
 import { setTokenHeader } from '../../config/axios';
+import { fetchListBridgeDomain, statusData } from '../../store/actions/vxlan';
 import LoadingIcon from './LoadingIcon';
 
 export default function FormAddBridgeDomain() {
   const [isSubmit, setisSubmit] = useState(false);
+  const dispatch = useDispatch();
 
   const [form, setform] = useState({
     bdName: '',
@@ -19,12 +22,23 @@ export default function FormAddBridgeDomain() {
     });
   };
 
+  const handlerFetchBridgeDomain = () => {
+    vmat
+      .getListBridgeDomain()
+      .then((response) => {
+        dispatch(fetchListBridgeDomain(response.data.message));
+      })
+      .catch((err) => {
+        dispatch(statusData('error'));
+      });
+  };
+
   const handlerSubmitAddBridgeDomain = (event) => {
     event.preventDefault();
     setisSubmit(true);
 
     setTokenHeader();
-
+    form.bdName = `BD_${form.bdName}`;
     vmat
       .addBridgeDomain(form)
       .then((response) => {
@@ -33,6 +47,7 @@ export default function FormAddBridgeDomain() {
           icon: 'success',
         });
         setisSubmit(false);
+        handlerFetchBridgeDomain();
       })
       .catch((err) => {
         setisSubmit(false);

@@ -1,8 +1,6 @@
 import { EyeIcon, EyeOffIcon } from '@heroicons/react/outline';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router';
 import swal from 'sweetalert';
 import vmat from '../../config/api/vmat';
 import { setTokenHeader } from '../../config/axios';
@@ -10,7 +8,6 @@ import { fetchListNodes, messageData } from '../../store/actions/fabric';
 import LoadingIcon from './LoadingIcon';
 
 export default function FormAddFabric({ stateModal }) {
-  const FABRIC = useSelector((state) => state.fabric);
   const dispatch = useDispatch();
   // var icon eye untuk kondisi ketika type password menjadi text begitu sebaliknya
   const [isShowPassword, setisShowPassword] = useState(false);
@@ -19,7 +16,6 @@ export default function FormAddFabric({ stateModal }) {
 
   const [isCapsclok, setisCapsclok] = useState(false);
   const [isSubmit, setisSubmit] = useState(false);
-  const history = useHistory();
 
   const [form, setForm] = useState({
     routerName: '',

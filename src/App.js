@@ -41,7 +41,7 @@ function App() {
         <Authenticated exact path="/bridge" component={Vxlan}></Authenticated>
         <Authenticated
           exact
-          path="/bridge/associate"
+          path="/bridge/associate/:id"
           component={AssociateBridge}></Authenticated>
         <Authenticated exact path="/us" component={AboutUs}></Authenticated>
       </Switch>
