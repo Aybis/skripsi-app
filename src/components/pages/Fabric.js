@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import swal from 'sweetalert';
 import vmat from '../../config/api/vmat';
 import { setTokenHeader } from '../../config/axios';
 import ToastHandler from '../../helpers/toast';
@@ -10,6 +11,7 @@ import {
 } from '../../store/actions/fabric';
 import ChildTableFabric from '../atoms/ChildTableFabric';
 import FormAddFabric from '../atoms/FormAddFabric';
+import LoadingIcon from '../atoms/LoadingIcon';
 import Modal from '../atoms/Modal';
 import ModalDelete from '../atoms/ModalDelete';
 import ModalWithClose from '../atoms/ModalWithClose';
@@ -19,12 +21,15 @@ import Layout from '../includes/Layout';
 
 export default function Fabric() {
   const FABRIC = useSelector((state) => state.fabric);
+  const [isUnderlayReady, setisUnderlayReady] = useState(false);
   const dispatch = useDispatch();
   const [show, setshow] = useState(false);
   const [showListVxlan, setshowListVxlan] = useState(false);
   const [titleModalVxlan, settitleModalVxlan] = useState('VXLAN');
   const [showModalDelete, setshowModalDelete] = useState(false);
   const [loadingDelete, setloadingDelete] = useState(false);
+  // untuk mematkan proses halaman sekarang ketika pindah halaman lain
+  const [didMount, setDidMount] = useState(false);
   const [dataDelete, setdataDelete] = useState({
     id: '',
     name: '',
@@ -53,14 +58,20 @@ export default function Fabric() {
       .setUnderlay(form)
       .then((response) => {
         setisLoading(false);
-        ToastHandler('success', response.data.message);
+        setisUnderlayReady(true);
+
+        swal({
+          title: response.data.message,
+          icon: 'success',
+        });
       })
       .catch((err) => {
         setisLoading(false);
-        ToastHandler(
-          'error',
-          err.response.data.message ?? 'Something happenned',
-        );
+        swal({
+          title: 'Something happenned',
+          text: err.response.data.message ?? 'Something happenned',
+          icon: 'error',
+        });
       });
   };
 
@@ -74,9 +85,7 @@ export default function Fabric() {
         dispatch(messageData('ok'));
       })
       .catch((err) => {
-        console.log(err.response);
         dispatch(messageData('error'));
-
         ToastHandler(
           'error',
           err.response.data.message ?? 'Something happenned',
@@ -91,15 +100,24 @@ export default function Fabric() {
       .deleteNodes({ id: data.id })
       .then((response) => {
         setloadingDelete(false);
-        ToastHandler('success', response.data.message);
+        swal({
+          title: response.data.message ?? 'Delete Successfully',
+          icon: 'success',
+        });
+        // ToastHandler('success', response.data.message);
+        dispatch(
+          fetchListNodes(
+            FABRIC.dataNodes.filter((index) => index._id !== data.id),
+          ),
+        );
         setshowModalDelete(false);
       })
       .catch((err) => {
         setloadingDelete(false);
-        ToastHandler(
-          'error',
-          err?.response?.data?.message ?? 'Something happened',
-        );
+        swal({
+          title: err?.response?.data?.message ?? 'Delete Successfully',
+          icon: 'error',
+        });
       });
   };
 
@@ -130,10 +148,30 @@ export default function Fabric() {
     settitleModalAdd('Associate Node to Fabric');
   };
 
+  console.log(FABRIC);
   useEffect(() => {
+    setTokenHeader();
+
+    dispatch(messageData('loading'));
+    vmat
+      .checkUndelay()
+      .then((response) => {
+        setisUnderlayReady(false);
+      })
+      .catch((err) => {
+        setisUnderlayReady(true);
+      });
     handlerGetListNode();
+    setDidMount(true);
+    return () => {
+      setDidMount(false);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
+
+  if (!didMount) {
+    return null;
+  }
 
   return (
     <Layout>
@@ -176,21 +214,31 @@ export default function Fabric() {
             <h2 className="text-xl font-semibold text-gray-900">
               List Manage Fabric
             </h2>
-            {FABRIC.dataNodes.length > 0 ? (
-              ''
-            ) : (
+            {!isUnderlayReady ? (
               <button
                 onClick={() => setshow(true)}
-                className="bg-apps-primary rounded-md px-4 py-2 text-white hover:bg-blue-700 transition-all duration-300 ease-in-out font-medium">
-                Delpoy Tunnel
+                disabled={!isUnderlayReady ? true : false}
+                className={`bg-apps-primary flex gap-2 rounded-md px-4 py-2 text-white hover:bg-blue-700 transition-all duration-300 ease-in-out font-medium ${
+                  !isUnderlayReady && 'disabled:opacity-50'
+                }`}>
+                {!isUnderlayReady && <LoadingIcon />}
+                Deploy Tunnel
               </button>
+            ) : (
+              ''
             )}
           </div>
-          <Table
-            handlerOpenModal={() => handlerAddFabric()}
-            handlerViewVxlanById={handlerGetListVxlanById}
-            handlerDelete={handlerModalDelete}
-          />
+          {isUnderlayReady ? (
+            <Table
+              handlerOpenModal={() => handlerAddFabric()}
+              handlerViewVxlanById={handlerGetListVxlanById}
+              handlerDelete={handlerModalDelete}
+            />
+          ) : (
+            <div className="flex justify-center items-center px-4 py-2">
+              <LoadingIcon color="text-apps-primary" height={8} width={8} />
+            </div>
+          )}
         </div>
       </Content>
     </Layout>

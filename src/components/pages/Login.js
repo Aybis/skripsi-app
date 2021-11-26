@@ -7,6 +7,7 @@ import ToastHandler from '../../helpers/toast';
 import { getProfile } from '../../store/actions/user';
 import LoadingIcon from '../atoms/LoadingIcon';
 import jwt_decode from 'jwt-decode';
+import swal from 'sweetalert';
 
 // history untuk set url digunakan untuk redirect maupun backpage
 const Login = ({ history }) => {
@@ -85,7 +86,11 @@ const Login = ({ history }) => {
         // get url before login
         const redirect = localStorage.getItem('VMAT:redirect');
         // show toast success
-        ToastHandler('success', 'Login Berhasil');
+        // ToastHandler('success', 'Login Berhasil');
+        swal({
+          title: 'Login Successfull!',
+          icon: 'success',
+        });
         // turn of state loading
         setisLoading(false);
         // redirect berdasarkan url redirect yang didapatkan

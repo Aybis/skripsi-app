@@ -37,9 +37,12 @@ function App() {
         {/* Route After Middleware */}
         <Authenticated exact path="/" component={Home}></Authenticated>
         <Authenticated exact path="/fabric" component={Fabric}></Authenticated>
-        <Gate exact path="/ibgp" component={Ospf}></Gate>
-        <Gate exact path="/bridge" component={Vxlan}></Gate>
-        <Gate exact path="/bridge/associate" component={AssociateBridge}></Gate>
+        <Authenticated exact path="/ibgp" component={Ospf}></Authenticated>
+        <Authenticated exact path="/bridge" component={Vxlan}></Authenticated>
+        <Authenticated
+          exact
+          path="/bridge/associate"
+          component={AssociateBridge}></Authenticated>
         <Authenticated exact path="/us" component={AboutUs}></Authenticated>
       </Switch>
     </Router>

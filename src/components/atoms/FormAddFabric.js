@@ -1,18 +1,64 @@
+import { EyeIcon, EyeOffIcon } from '@heroicons/react/outline';
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
+import swal from 'sweetalert';
 import vmat from '../../config/api/vmat';
 import { setTokenHeader } from '../../config/axios';
+import { fetchListNodes, messageData } from '../../store/actions/fabric';
+import LoadingIcon from './LoadingIcon';
 
 export default function FormAddFabric({ stateModal }) {
+  const FABRIC = useSelector((state) => state.fabric);
+  const dispatch = useDispatch();
+  // var icon eye untuk kondisi ketika type password menjadi text begitu sebaliknya
+  const [isShowPassword, setisShowPassword] = useState(false);
+  // var untuk ganti type form password menjadi text dan sebaliknya
+  const [isPassword, setisPassword] = useState('password');
+
+  const [isCapsclok, setisCapsclok] = useState(false);
+  const [isSubmit, setisSubmit] = useState(false);
+  const history = useHistory();
+
   const [form, setForm] = useState({
     routerName: '',
     management: '',
     routerUsername: '',
     routerPassword: '',
     role: '',
+    keyApi: 'binus2021',
     nhrpSecret: '',
-    localAs: 0,
-    remoteAs: 0,
+    bgp: {},
+    localAs: '',
+    remoteAs: '',
   });
+
+  const handlerGetListNode = () => {
+    setTokenHeader();
+
+    vmat
+      .getNodes()
+      .then((response) => {
+        dispatch(fetchListNodes(response.data.message));
+        dispatch(messageData('ok'));
+      })
+      .catch((err) => {
+        dispatch(messageData('error'));
+      });
+  };
+
+  /**
+   * Detect caps lock being on when typing.
+   * @param keyEvent On key down event.
+   */
+  const onKeyDown = (keyEvent) => {
+    if (keyEvent.getModifierState('CapsLock')) {
+      setisCapsclok(true);
+    } else {
+      setisCapsclok(false);
+    }
+  };
 
   const handlerOnChange = (event) => {
     setForm({
@@ -21,18 +67,44 @@ export default function FormAddFabric({ stateModal }) {
     });
   };
 
+  // function untuk show text password
+  const handlerClick = () => {
+    setisShowPassword(!isShowPassword);
+    if (isPassword === 'text') {
+      setisPassword('password');
+    } else {
+      setisPassword('text');
+    }
+  };
+
   const handlerSubmitAdd = (event) => {
+    setisSubmit(true);
     event.preventDefault();
-    // stateModal(false);
+    form.bgp = {
+      localAs: form.localAs,
+      remoteAs: form.remoteAs,
+    };
+
+    delete form.localAs;
+    delete form.remoteAs;
 
     setTokenHeader();
-    console.log(form);
     vmat
       .addNode(form)
       .then((response) => {
-        console.log('succes', response);
+        setisSubmit(false);
+        swal({
+          title: response.data.message ?? 'Node Successfully Added',
+          icon: 'success',
+        });
+        handlerGetListNode();
       })
       .catch((err) => {
+        setisSubmit(false);
+        swal({
+          title: err.response.data.message ?? 'Something Happened!',
+          icon: 'error',
+        });
         console.log('error', err.response);
       });
   };
@@ -52,7 +124,8 @@ export default function FormAddFabric({ stateModal }) {
               name="routerName"
               value={form.routerName}
               onChange={handlerOnChange}
-              className="max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"
+              placeholder="JKT-SPOKE"
+              className="max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 font-medium sm:max-w-xs sm:text-sm border-gray-300 rounded-md placeholder-gray-400 placeholder-opacity-60"
             />
           </div>
         </div>
@@ -69,7 +142,8 @@ export default function FormAddFabric({ stateModal }) {
               name="management"
               value={form.management}
               onChange={handlerOnChange}
-              className="max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"
+              placeholder="220.110.134.1/24"
+              className="placeholder-gray-400 placeholder-opacity-60 max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"
             />
           </div>
         </div>
@@ -86,7 +160,8 @@ export default function FormAddFabric({ stateModal }) {
               value={form.routerUsername}
               onChange={handlerOnChange}
               type="text"
-              className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"
+              placeholder="vyos"
+              className="placeholder-gray-400 placeholder-opacity-60 block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"
             />
           </div>
         </div>
@@ -102,9 +177,22 @@ export default function FormAddFabric({ stateModal }) {
               name="routerPassword"
               value={form.routerPassword}
               onChange={handlerOnChange}
-              type="password"
-              className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"
+              type={isPassword}
+              placeholder="*******"
+              className="placeholder-gray-400 placeholder-opacity-60 block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"
             />
+            <span className="text-xs font-medium text-gray-400">
+              {isCapsclok && 'Your Capslock is ON!'}
+            </span>
+            <div
+              className="absolute right-20 -mt-7 cursor-pointer"
+              onClick={handlerClick}>
+              {isShowPassword ? (
+                <EyeIcon className="h-4 w-4 text-warmGray-600" />
+              ) : (
+                <EyeOffIcon className="h-4 w-4 text-warmGray-600" />
+              )}
+            </div>
           </div>
         </div>
 
@@ -137,13 +225,26 @@ export default function FormAddFabric({ stateModal }) {
           </label>
           <div className="mt-1 sm:mt-0 sm:col-span-2">
             <input
-              type="password"
+              type={isPassword}
               name="nhrpSecret"
               value={form.nhrpSecret}
               onChange={handlerOnChange}
-              autoComplete="street-address"
-              className="block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"
+              onKeyDown={onKeyDown}
+              placeholder="******"
+              className="placeholder-gray-400 placeholder-opacity-60 block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"
             />
+            <span className="text-xs font-medium text-gray-400">
+              {isCapsclok && 'Your Capslock is ON!'}
+            </span>
+            <div
+              className="absolute right-20 -mt-7 cursor-pointer"
+              onClick={handlerClick}>
+              {isShowPassword ? (
+                <EyeIcon className="h-4 w-4 text-warmGray-600" />
+              ) : (
+                <EyeOffIcon className="h-4 w-4 text-warmGray-600" />
+              )}
+            </div>
           </div>
         </div>
 
@@ -155,11 +256,13 @@ export default function FormAddFabric({ stateModal }) {
           </label>
           <div className="mt-1 sm:mt-0 sm:col-span-2">
             <input
-              type="number"
+              type="text"
               name="localAs"
-              value={form.localAs}
+              value={form.localAs || ''}
               onChange={handlerOnChange}
-              className="max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"
+              placeholder="65010"
+              autoComplete="true"
+              className="placeholder-gray-400 placeholder-opacity-60 max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"
             />
           </div>
         </div>
@@ -172,11 +275,13 @@ export default function FormAddFabric({ stateModal }) {
           </label>
           <div className="mt-1 sm:mt-0 sm:col-span-2">
             <input
-              type="number"
-              value={form.remoteAs}
+              type="text"
+              value={form.remoteAs || ''}
               name="remoteAs"
               onChange={handlerOnChange}
-              className="max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"
+              placeholder="65010"
+              autoComplete="true"
+              className="placeholder-gray-400 placeholder-opacity-60 max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"
             />
           </div>
         </div>
@@ -184,8 +289,10 @@ export default function FormAddFabric({ stateModal }) {
         <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
           <div className="mt-1 sm:mt-0 sm:col-span-2">
             <button
+              disabled={isSubmit}
               type="submit"
-              className="mt-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+              className="mt-4 inline-flex gap-2 justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50">
+              {isSubmit && <LoadingIcon />}
               Add Node to Fabric
             </button>
           </div>

@@ -115,23 +115,30 @@ export default function Table({
                             View OSPF
                           </button>
                         </td>
-                        <td className="px-6 flex justify-center items-center py-4 whitespace-nowrap text-left text-sm font-medium gap-1">
-                          <button
-                            onClick={() => handlerDelete(item)}
-                            className="flex gap-1 items-center text-red-600 hover:text-red-900 font-medium">
-                            <TrashIcon className="h-4 w-4 " />
-                            Delete Node
-                          </button>
+                        <td className="px-6  py-4 whitespace-nowrap text-left text-sm font-medium gap-1">
+                          <div className="flex justify-center items-center">
+                            <button
+                              onClick={() => handlerDelete(item)}
+                              className="flex gap-1 items-center text-red-600 hover:text-red-900 font-medium">
+                              <TrashIcon className="h-4 w-4 " />
+                              Delete Node
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
                       <td
-                        colSpan="6"
-                        className="text-center text-gray-500 font-semibold flex justify-center items-center w-full">
-                        <LoadingIcon color="text-apps-primary ml-2" />
-                        Data Kosong{' '}
+                        colSpan={6}
+                        rowSpan={6}
+                        className="text-center text-gray-500 font-semibold py-4 px-6">
+                        <span className="flex gap-2 w-full items-center justify-center">
+                          {FABRIC.message === 'loading' && (
+                            <LoadingIcon color="text-apps-primary ml-2" />
+                          )}
+                          Data Kosong
+                        </span>
                       </td>
                     </tr>
                   )}

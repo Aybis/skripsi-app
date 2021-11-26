@@ -1,9 +1,13 @@
 import React from 'react';
 
-export default function LoadingIcon({ color = 'text-white' }) {
+export default function LoadingIcon({
+  color = 'text-white',
+  height = 5,
+  width = 5,
+}) {
   return (
     <svg
-      className={`animate-spin -ml-1 mr-3 h-5 w-5 ${color}`}
+      className={`animate-spin -ml-1 mr-3 h-${height} w-${width} ${color}`}
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24">

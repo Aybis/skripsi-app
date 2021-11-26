@@ -69,37 +69,36 @@ function TableOspf({
                     </div>
                     <div className="pl-4">
                       <p className="font-semibold text-blue-600 tracking-wide">
-                        {item.name}
-                      </p>
-                      <p className="text-xs leading-3 text-blue-400 pt-2">
-                        Aplikasi {item.aplikasi}
+                        {item.bdName}
                       </p>
                     </div>
                   </div>
                 </td>
                 <td className="pl-12">
                   <p className="text-sm font-medium leading-none text-gray-800">
-                    {item.bridge_id}
+                    {item._id}
                   </p>
                 </td>
                 <td className="pl-12">
-                  <p className="text-sm font-medium leading-none text-gray-800">
-                    {item.vni}
+                  <p className="text-sm text-center font-medium leading-none text-gray-800">
+                    {item.vniId}
                   </p>
                 </td>
-                <td className="px-7 2xl:px-0 flex flex-col gap-2 py-2">
-                  <button
-                    onClick={() => handlerAssociateNode()}
-                    className="flex gap-1 items-center text-green-600 hover:text-green-700 font-medium">
-                    <PlusIcon className="h-4 w-4 " />
-                    Associate Node
-                  </button>
-                  <button
-                    onClick={() => handlerClickDelete()}
-                    className="flex gap-1 items-center text-red-600 hover:text-red-900 font-medium">
-                    <TrashIcon className="h-4 w-4 " />
-                    Delete Bridge
-                  </button>
+                <td className="pl-7 2xl:px-0  py-2">
+                  <div className="flex flex-col gap-2">
+                    <button
+                      onClick={() => handlerAssociateNode(item)}
+                      className="flex gap-1 items-center text-green-600 hover:text-green-700 font-medium">
+                      <PlusIcon className="h-4 w-4 " />
+                      Associate Node
+                    </button>
+                    <button
+                      onClick={() => handlerClickDelete()}
+                      className="flex gap-1 items-center text-red-600 hover:text-red-900 font-medium">
+                      <TrashIcon className="h-4 w-4 " />
+                      Delete Bridge
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

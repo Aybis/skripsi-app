@@ -55,7 +55,7 @@ export default function Home() {
           <h1 className="text-lg font-semibold text-warmGray-800">
             List Nodes
           </h1>
-          <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-16">
+          <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-x-8 lg:gap-y-16">
             {FABRIC.dataNodes.length > 0 ? (
               FABRIC.dataNodes.map((item) => (
                 <motion.div
@@ -81,10 +81,10 @@ export default function Home() {
 
                   <div className="grid grid-cols-2 gap-2 mt-6 px-2">
                     <div className="flex flex-col gap-1">
-                      <span className="text-sm font-medium text-warmGray-700">
+                      <span className="text-sm font-medium text-warmGray-500">
                         VXLAN
                       </span>
-                      <span className="font-semibold text-warmGray-800">
+                      <span className="font-semibold text-lg text-warmGray-800">
                         {item.interfaceList.length}
                       </span>
                     </div>
@@ -92,7 +92,7 @@ export default function Home() {
                       <span className="text-sm font-medium text-warmGray-500">
                         OSPF
                       </span>
-                      <span className="font-semibold text-warmGray-800">
+                      <span className="font-semibold text-lg text-warmGray-800">
                         {item.interfaceList.length}
                       </span>
                     </div>

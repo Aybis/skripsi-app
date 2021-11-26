@@ -7,6 +7,7 @@ export default {
 
   // fabric end point
   setUnderlay: (data) => axios.post('inventory/setupunderlay', data),
+  checkUndelay: () => axios.get('/inventory/check-underlay'),
   getNodes: () => axios.get('inventory/router'),
   addNode: (data) => axios.post('inventory/', data),
   deleteNodes: (data) => axios.post('inventory/load-init', data),
@@ -14,10 +15,10 @@ export default {
     axios.get(`/configure/member-vxlan-of-nodes/${data}`),
 
   // vxlan end point
-  addBridgeVxlan: (data) =>
+  getListBridgeDomain: () => axios.get('configure/bridgedomain'),
+  addBridgeDomain: (data) =>
     axios.post('configure/create-new-bridge-domain', data),
-  listBridgeVxlan: () => axios.get('configure/bridgedomain'),
-  addDomainBridgeVxlan: (data) =>
+  associateBridgeDomain: (data) =>
     axios.post('configure/add-bridge-domain-member', data),
   listDomainBridge: (idBridge) =>
     axios.get(`configure/member-of-bd/${idBridge}`),
