@@ -133,7 +133,7 @@ export default function Fabric() {
     setshowListVxlan(true);
     setTokenHeader();
     vmat
-      .viewVxlanById(data._id)
+      .fetchListBridgeByFabric(data._id)
       .then((response) => {
         dispatch(fetchVxlanByFabric(response.data.message));
         settitleModalVxlan(data.routerName);
@@ -148,7 +148,6 @@ export default function Fabric() {
     settitleModalAdd('Associate Node to Fabric');
   };
 
-  console.log(FABRIC);
   useEffect(() => {
     setTokenHeader();
 

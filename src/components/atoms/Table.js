@@ -60,12 +60,12 @@ export default function Table({
                     <th
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      VXLAN List
+                      Bridge Domain List
                     </th>
                     <th
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      OSPF Network Advertisement
+                      iBGP List
                     </th>
                     <th scope="col" className="relative px-6 py-3"></th>
                   </tr>
@@ -102,17 +102,15 @@ export default function Table({
                             onClick={() => handlerViewVxlanById(item)}
                             className="flex gap-1 items-center text-blue-600 hover:text-blue-900 font-medium border-b border-blue-600 hover:border-blue-900 pb-1">
                             <ViewGridAddIcon className="h-4 w-4 " />
-                            View VXLAN
+                            View Bridge Domain
                           </button>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-gray-500">
                           <button
-                            onClick={() =>
-                              handlerDetailDataOSPFOrVXLAN(6, 'OSPF')
-                            }
+                            onClick={() => alert('On Progress :)')}
                             className="flex gap-1 items-center text-blue-600 hover:text-blue-900 font-medium border-b border-blue-600 hover:border-blue-900 pb-1">
                             <ViewGridAddIcon className="h-4 w-4 " />
-                            View OSPF
+                            View iBGP
                           </button>
                         </td>
                         <td className="px-6  py-4 whitespace-nowrap text-left text-sm font-medium gap-1">
