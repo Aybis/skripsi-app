@@ -4,3 +4,6 @@ export const LIST_INTERFACE_BY_BRIDGE_DOMAIN =
   'LIST_INTERFACE_BY_BRIDGE_DOMAIN';
 export const MESSAGE_DATA = 'MESSAGE_DATA';
 export const STATUS_DATA = 'STATUS_DATA';
+export const LOADING = 'LOADING';
+export const ERROR = 'ERROR';
+export const NAME = 'NAME';

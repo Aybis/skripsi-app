@@ -1,5 +1,12 @@
 export const LIST_NODE_FABRICS = 'LIST_NODE_FABRICS';
 export const LIST_VXLAN_BY_FABRIC = 'LIST_VXLAN_BY_FABRIC';
 export const LIST_OSPF_BY_FABRIC = 'LIST_OSPF_BY_FABRIC';
+export const BRIDGE_NAME = 'BRIDGE_NAME';
+export const LIST_BRIDGE = 'LIST_BRIDGE';
+export const IBGP_NAME = 'IBGP_NAME';
+export const LIST_IBGP = 'LIST_IBGP';
 export const STATUS_DATA = 'STATUS_DATA';
 export const MESSAGE_DATA = 'MESSAGE_DATA';
+export const TUNNEL = 'TUNNEL';
+export const LOADING = 'LOADING';
+export const ERROR = 'ERROR';

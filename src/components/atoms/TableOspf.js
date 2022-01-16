@@ -54,7 +54,7 @@ function TableOspf({ handlerOpenModal, handlerAssociateNode }) {
           </div>
         </div>
       </div>
-      <div className="bg-white shadow px-4 md:px-10 pt-4 md:pt-7 pb-5 overflow-x-auto">
+      <div className="bg-white shadow pt-4 md:pt-7 pb-5 overflow-x-auto">
         {BRIDGE.status === 'idle' ? (
           <div className="flex justify-center items-center">
             <LoadingIcon color="text-apps-primary" height={8} width={8} />

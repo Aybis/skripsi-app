@@ -10,13 +10,14 @@ export default function ModalDelete({
   handlerClose,
   isSubmit,
   handlerDelete,
+  setShow,
 }) {
   return (
     <Transition.Root show={isShow} as={Fragment}>
       <Dialog
         as="div"
         className="fixed z-10 inset-0 overflow-y-auto"
-        onClose={handlerClose}>
+        onClose={() => handlerClose(true)}>
         <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
           <Transition.Child
             as={Fragment}
@@ -47,8 +48,12 @@ export default function ModalDelete({
               <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
                 <button
                   type="button"
-                  className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  onClick={handlerClose}>
+                  disabled={isSubmit}
+                  className={[
+                    'bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-40',
+                    isSubmit && 'cursor-not-allowed',
+                  ].join(' ')}
+                  onClick={() => handlerClose(false)}>
                   <span className="sr-only">Close</span>
                   <XIcon className="h-6 w-6" aria-hidden="true" />
                 </button>
@@ -68,8 +73,9 @@ export default function ModalDelete({
                   </Dialog.Title>
                   <div className="mt-4 mb-8">
                     <p className=" text-gray-500">
-                      Are you sure you want to delete block IP Address{' '}
-                      <span className="font-semibold underline text-gray-800">
+                      Are you sure you want to delete
+                      <br />
+                      <span className="mt-1 font-semibold underline text-gray-800">
                         {data.name}
                       </span>{' '}
                       ?
@@ -81,8 +87,8 @@ export default function ModalDelete({
                 <button
                   type="button"
                   disabled={isSubmit}
-                  className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm ${
-                    isSubmit && 'bg-opacity-40'
+                  className={`disabled:opacity-40 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm ${
+                    isSubmit && 'cursor-not-allowed'
                   }`}
                   onClick={() => handlerDelete(data)}>
                   {isSubmit && <LoadingIcon />}
@@ -90,8 +96,12 @@ export default function ModalDelete({
                 </button>
                 <button
                   type="button"
-                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
-                  onClick={handlerClose}>
+                  disabled={isSubmit}
+                  className={[
+                    'disabled:opacity-40 mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm',
+                    isSubmit && 'cursor-not-allowed',
+                  ].join(' ')}
+                  onClick={() => handlerClose(false)}>
                   Cancel
                 </button>
               </div>

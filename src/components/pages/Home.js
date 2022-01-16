@@ -1,6 +1,6 @@
 import { ServerIcon } from '@heroicons/react/outline';
 import { motion } from 'framer-motion';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import vmat from '../../config/api/vmat';
 import { setTokenHeader } from '../../config/axios';
@@ -10,6 +10,7 @@ import Content from '../includes/Content';
 import Layout from '../includes/Layout';
 
 export default function Home() {
+  const [underlay, setunderlay] = useState(null);
   const USER = useSelector((state) => state.user);
   const FABRIC = useSelector((state) => state.fabric);
   const dispatch = useDispatch();
@@ -24,13 +25,21 @@ export default function Home() {
         dispatch(messageData('ok'));
       })
       .catch((err) => {
-        console.log(err.response);
         dispatch(messageData('error'));
 
         ToastHandler(
           'error',
           err.response.data.message ?? 'Something happenned',
         );
+      });
+
+    vmat
+      .getUnderlay()
+      .then((response) => {
+        setunderlay(response.data.message);
+      })
+      .catch((err) => {
+        setunderlay(null);
       });
   };
   useEffect(() => {
@@ -41,14 +50,30 @@ export default function Home() {
   return (
     <Layout>
       <Content title="Dashboard">
-        <div className="relative mt-12 ">
-          <div className="inline-flex gap-2">
-            <span className="text-2xl font-light text-warmGray-600">
-              IP Tunnel :{' '}
-            </span>
-            <h1 className="text-2xl font-bold text-warmGray-800 ">
-              10.10.10.0/24
-            </h1>
+        <div className="relative mt-8 ">
+          <div className="flex flex-col gap-1">
+            <div className="inline-flex gap-2">
+              <span className="text-xl font-light text-warmGray-600">
+                IP Tunnel :{' '}
+              </span>
+              <h1 className="text-xl font-bold text-warmGray-800 "> </h1>
+            </div>
+            <div className="inline-flex gap-2">
+              <span className="text-xl font-light text-warmGray-600">
+                Underlay Digunakan :{' '}
+              </span>
+              <h1 className="text-xl font-bold text-warmGray-800 ">
+                {underlay ? underlay?.underlay_used : ''}
+              </h1>
+            </div>
+            <div className="inline-flex gap-2">
+              <span className="text-xl font-light text-warmGray-600">
+                Underlay Tersedia :{' '}
+              </span>
+              <h1 className="text-xl font-bold text-warmGray-800 ">
+                {underlay ? underlay?.underlay_available : ''}
+              </h1>
+            </div>
           </div>
         </div>
         <div className="mt-8 relative">
@@ -61,7 +86,7 @@ export default function Home() {
                 <motion.div
                   whileTap={{ scale: 0.75 }}
                   key={item._id}
-                  className="bg-white border-2 border-warmGray-200 rounded-lg p-4 group hover:shadow-lg transition-all duration-300 ease-in-out cursor-pointer">
+                  className="bg-white border-2 border-warmGray-200 border-opacity-70 rounded-lg p-4 group hover:shadow-lg transition-all duration-300 ease-in-out cursor-pointer">
                   <div className="flex flex-row-reverse justify-between px-2">
                     <span className="flex items-center justify-center h-12 w-12 rounded-md bg-warmGray-300 bg-opacity-10">
                       <ServerIcon

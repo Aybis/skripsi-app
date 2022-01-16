@@ -4,7 +4,7 @@ import storage from 'redux-persist/lib/storage';
 
 import user from './user';
 import fabric from './fabric';
-import bridge from './vxlan';
+import bridge from './bridge';
 
 const persistConfig = {
   key: 'root',

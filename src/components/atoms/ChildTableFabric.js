@@ -12,53 +12,66 @@ export default function ChildTableFabric({ data }) {
               <th className="font-medium tracking-wide text-left pl-4 capitalize">
                 Bridge Domain Name
               </th>
-              <th className="font-medium tracking-wide text-left">VNI ID</th>
-              <th className="font-medium tracking-wide text-left pl-12">
+              <th className="font-medium tracking-wide text-left pl-4">
+                VNI ID
+              </th>
+              <th className="font-medium tracking-wide text-left pl-4">
                 Interface
               </th>
             </tr>
           </thead>
           <tbody className="w-full">
-            {data.length > 0 ? (
-              data.map((item, index) => (
-                <tr
-                  key={Math.random()}
-                  className="h-20 text-sm font-semibold leading-none text-gray-800 bg-white hover:bg-gray-100 border-b border-t border-gray-100">
-                  <td className="pl-4">
-                    <p className="text-sm leading-none text-gray-400">
-                      {index + 1}
-                    </p>
-                  </td>
-                  <td className="pl-4">
-                    <div className="flex items-center">
-                      <div className="pl-4">
-                        <p className="font-semibold text-gray-800 tracking-wide">
-                          {item.bdName}
-                        </p>
+            {data.message === 'ok' ? (
+              data.dataVxlanByFabric.length > 0 ? (
+                data.dataVxlanByFabric.map((item, index) => (
+                  <tr
+                    key={Math.random()}
+                    className="h-20 text-sm font-semibold leading-none text-gray-800 bg-white hover:bg-gray-100 border-b border-t border-gray-100">
+                    <td className="pl-4">
+                      <p className="text-sm leading-none text-gray-400">
+                        {index + 1}
+                      </p>
+                    </td>
+                    <td className="pl-4">
+                      <div className="flex items-center">
+                        <div className="pl-4">
+                          <p className="font-semibold text-gray-800 tracking-wide">
+                            {item.bdName}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="">
-                    <p
-                      key={Math.random()}
-                      className="text-sm font-medium leading-none text-gray-600">
-                      {item.vniId}
-                    </p>
-                  </td>
-                  <td className="pl-12">
-                    {item?.interfaceMember?.map((data) => (
+                    </td>
+                    <td className="">
                       <p
                         key={Math.random()}
                         className="text-sm font-medium leading-none text-gray-600">
-                        {data},
+                        {item.vniId}
                       </p>
-                    ))}
+                    </td>
+                    <td className="pl-12">
+                      {item?.interfaceMember?.map((data) => (
+                        <p
+                          key={Math.random()}
+                          className="text-sm font-medium leading-none text-gray-600">
+                          {data},
+                        </p>
+                      ))}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    rowSpan={4}
+                    colSpan={4}
+                    className="text-center p-4 text-gray-600 font-medium">
+                    <p>Data Kosong</p>
                   </td>
                 </tr>
-              ))
+              )
             ) : (
               <tr>
-                <td rowSpan={4} className="text-center">
+                <td rowSpan={4} colSpan={4} className="text-center">
                   <LoadingIcon color="text-apps-primary" />
                 </td>
               </tr>

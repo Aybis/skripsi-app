@@ -9,15 +9,15 @@ import {
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router-dom';
 import swal from 'sweetalert';
 import vmat from '../../config/api/vmat';
 import { setTokenHeader } from '../../config/axios';
 import {
-  fetchListBridgeDomain,
-  fetchListNodeByBridgeDomain,
+  setListBridgeDomain,
+  setListNodeByBridgeDomain,
   statusData,
-} from '../../store/actions/vxlan';
+} from '../../store/actions/bridge';
 import FormAddInterface from '../atoms/FormAddInterface';
 import FormAssociatedNode from '../atoms/FormAssociatedNode';
 import LoadingIcon from '../atoms/LoadingIcon';
@@ -32,6 +32,7 @@ export default function AssociateBridge() {
   const dispatch = useDispatch();
   const BRIDGE = useSelector((state) => state.bridge);
   const FABRIC = useSelector((state) => state.fabric);
+  console.log('idbridge', id);
 
   const [bridgeDomain, setbridgeDomain] = useState('');
   const [dataBridgeAndRouter, setdataBridgeAndRouter] = useState('');
@@ -40,6 +41,19 @@ export default function AssociateBridge() {
   const [modalAssociateInterface, setmodalAssociateInterface] = useState(false);
   const [modalDeassociateInterface, setmodalDeassociateInterface] =
     useState(false);
+
+  const [form, setform] = useState({
+    idBridgeDomain: '',
+    idRouter: '',
+  });
+
+  // handler onchange digunakan untuk mendapatkan value dari form input
+  // const handlerOnChange = (event) => {
+  //   setform({
+  //     ...form,
+  //     [event.target.name]: event.target.value,
+  //   });
+  // };
 
   const handlerAssociateInterfaceToBridge = (data) => {
     let result =
@@ -51,41 +65,73 @@ export default function AssociateBridge() {
     setdataBridgeAndRouter(data);
   };
 
+  const handlerUpdateAssociateNode = (id) => {
+    console.log('idbridge ha', id);
+    vmat
+      .listNodeByBridgeDomain(id)
+      .then((res) => {
+        dispatch(setListNodeByBridgeDomain(res.data.message));
+      })
+      .catch((err) => {
+        dispatch(statusData('error'));
+      });
+  };
+
   const handlerDeassociateNode = (item) => {
+    form.idBridgeDomain = id;
+    form.idRouter = item.idRouterListModel;
+
+    console.log(form);
     swal({
       title: 'Are you sure?',
       text: `Once deleted, you will not be able to recover this ${item.routerName}!`,
       icon: 'warning',
-      buttons: true,
+      buttons: {
+        text: 'Delete!',
+        closeModal: false,
+      },
       dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
-        swal('Poof! Your Bridge Domain has been deleted!', {
-          icon: 'success',
-        });
-      } else {
-        swal('Your Bridge Domain is safe!');
-      }
-    });
+    })
+      .then((willDelete) => {
+        if (willDelete) {
+          vmat
+            .deassociateNodeByBridgeDomain(form)
+            .then((res) => {
+              swal(
+                res.data.message ??
+                  'Poof! Your Associated Node has been deleted!',
+                {
+                  icon: 'success',
+                },
+              );
+              handlerUpdateAssociateNode(id);
+            })
+            .catch((err) => {
+              console.log(err.response.data.message);
+            });
+        } else {
+          swal('Your Associated Node is safe!');
+        }
+      })
+      .catch((err) => {
+        if (err) {
+          swal('Oh noes!', 'The AJAX request failed!', 'error');
+        } else {
+          swal.stopLoading();
+          swal.close();
+        }
+      });
   };
 
   useEffect(() => {
     dispatch(statusData('idle'));
     setTokenHeader();
-
-    vmat
-      .listNodeByBridgeDomain(id)
-      .then((res) => {
-        dispatch(fetchListNodeByBridgeDomain(res.data.message));
-      })
-      .catch((err) => {
-        dispatch(statusData('error'));
-      });
+    handlerUpdateAssociateNode(id);
 
     vmat
       .getListBridgeDomain()
       .then((response) => {
-        dispatch(fetchListBridgeDomain(response.data.message));
+        dispatch(setListBridgeDomain(response.data.message));
         let name = response.data.message.filter((index) => index._id === id);
         setbridgeDomain(name[0]);
       })
@@ -193,16 +239,16 @@ export default function AssociateBridge() {
                             {index + 1}
                           </p>
                         </td>
-                        <td className="pl-4 cursor-pointer">
+                        <td className="pl-4">
                           <div className="flex items-center">
                             <div className="w-10 h-10">
-                              <ServerIcon className="text-blue-600 h-8 w-8" />
+                              <ServerIcon className="text-gray-500 h-8 w-8" />
                             </div>
                             <div className="pl-4">
-                              <p className="font-semibold text-blue-600 tracking-wide">
+                              <p className="font-semibold text-gray-800 tracking-wide">
                                 {item.routerName}
                               </p>
-                              <p className="text-xs leading-3 text-blue-400 pt-2">
+                              <p className="text-xs leading-3 text-gray-400 pt-2">
                                 {item.bdName}
                               </p>
                             </div>

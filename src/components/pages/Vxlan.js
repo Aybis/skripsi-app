@@ -1,84 +1,74 @@
+import { PlusSmIcon } from '@heroicons/react/solid';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import vmat from '../../config/api/vmat';
+import { useDispatch, useSelector } from 'react-redux';
 import { setTokenHeader } from '../../config/axios';
-import { fetchListBridgeDomain, statusData } from '../../store/actions/vxlan';
-import ChildTable from '../atoms/ChildTable';
-import FormAddBridgeDomain from '../atoms/FormAddBridgeDomain';
-import FormAssociatedNode from '../atoms/FormAssociatedNode';
-import ModalWithClose from '../atoms/ModalWithClose';
-import TableOspf from '../atoms/TableOspf';
-import Content from '../includes/Content';
-import Layout from '../includes/Layout';
+import {
+  fetchListBridgeDomain,
+  setName,
+  statusData,
+} from '../../store/actions/bridge';
+import {
+  ChildTable,
+  FormAddBridgeDomain,
+  FormAssociatedNode,
+  Modals,
+} from '../atoms';
+import { Content, Layout } from '../includes';
+import { ListTableBridgeDomain } from '../molecules';
 
 export default function Vxlan({ history }) {
+  const BRIDGE = useSelector((state) => state.bridge);
   const [showModal, setshowModal] = useState(false);
   const [showModalDetail, setshowModalDetail] = useState(false);
-  const [titleModal, settitleModal] = useState('');
-  const [data, setdata] = useState([]);
   const [modalAssociateNode, setmodalAssociateNode] = useState(false);
-  const [dataBridgeDomain, setdataBridgeDomain] = useState({});
   const dispatch = useDispatch();
-
-  const handlerAddBridgeDomain = () => {
-    setshowModal(true);
-    settitleModal('Add Bridge Domain');
-  };
 
   const handlerModalAssociateNode = (data) => {
     setmodalAssociateNode(true);
-    setdataBridgeDomain(data);
+    dispatch(setName(data));
   };
 
   useEffect(() => {
     dispatch(statusData('idle'));
-
+    dispatch(fetchListBridgeDomain());
     setTokenHeader();
-
-    vmat
-      .getListBridgeDomain()
-      .then((response) => {
-        setdata(response.data.message);
-        dispatch(fetchListBridgeDomain(response.data.message));
-      })
-      .catch((err) => {
-        dispatch(statusData('error'));
-      });
   }, [dispatch]);
 
   return (
     <Layout>
       <Content title="BRIDGE DOMAIN">
         {/* Modal Add Bridge */}
-        <ModalWithClose
-          show={showModal}
-          handlerModal={() => setshowModal(false)}
-          title={titleModal}>
-          <FormAddBridgeDomain />
-        </ModalWithClose>
+        <FormAddBridgeDomain show={showModal} handlerShow={setshowModal} />
 
         {/* Modal Associate Node */}
-        <ModalWithClose
+        <FormAssociatedNode
           show={modalAssociateNode}
-          handlerModal={() => setmodalAssociateNode(false)}
-          title="Associated Node">
-          <FormAssociatedNode data={dataBridgeDomain} />
-        </ModalWithClose>
-
-        {/* End Modal Associate Node */}
+          handlerShow={setmodalAssociateNode}
+        />
 
         {/* Modal Detail List Bridge */}
-        <ModalWithClose
+        <Modals
           show={showModalDetail}
-          handlerModal={() => setshowModalDetail(false)}
-          title={data.name}>
-          <ChildTable data={data.data} />
-        </ModalWithClose>
+          handlerShow={setshowModalDetail}
+          title={BRIDGE.name.bdNname}>
+          <ChildTable data={BRIDGE.name} />
+        </Modals>
 
-        <TableOspf
-          handlerOpenModal={() => handlerAddBridgeDomain()}
-          handlerAssociateNode={handlerModalAssociateNode}
-        />
+        <div className="mt-8">
+          <div className="relative mb-6">
+            <button
+              onClick={() => setshowModal(true)}
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-apps-primary hover:bg-blue-600 focus:outline-none rounded">
+              <PlusSmIcon className="h-5 w-5 text-white" />
+              <p className="text-sm font-medium leading-none text-white">
+                Add Bridge Domain
+              </p>
+            </button>
+          </div>
+          <ListTableBridgeDomain
+            handlerModalAssociateNode={handlerModalAssociateNode}
+          />
+        </div>
       </Content>
     </Layout>
   );

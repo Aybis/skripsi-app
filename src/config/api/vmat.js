@@ -7,7 +7,8 @@ export default {
 
   // fabric end point
   setUnderlay: (data) => axios.post('inventory/setupunderlay', data),
-  checkUndelay: () => axios.get('/inventory/check-underlay'),
+  checkUndelay: () => axios.get('inventory/check-underlay'),
+  getUnderlay: () => axios.get('inventory/info-underlay'),
   getNodes: () => axios.get('inventory/router'),
   addNode: (data) => axios.post('inventory/', data),
   deleteNodes: (data) => axios.post('inventory/load-init', data),
@@ -20,10 +21,12 @@ export default {
     axios.post('configure/create-new-bridge-domain', data),
   addNodeByBridgeDomain: (data) =>
     axios.post('configure/add-bridge-domain-member', data),
+  deassociateNodeByBridgeDomain: (data) =>
+    axios.post('configure/remove-bridge-domain-member', data),
   addInterfaceByBridgeDomain: (data) =>
     axios.post('configure/assoc-int-vxlan', data),
   listNodeByBridgeDomain: (idBridge) =>
-    axios.get(`configure/member-of-bd/${idBridge}`),
+    axios.get(`configure/member-vxlan-of-nodes/${idBridge}`),
 
   //   ospf end point
 };

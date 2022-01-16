@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import swal from 'sweetalert';
+import { LoadingIcon } from '.';
 import vmat from '../../config/api/vmat';
-import {
-  fetchListNodeByBridgeDomain,
-  statusData,
-} from '../../store/actions/vxlan';
-import LoadingIcon from './LoadingIcon';
+import { setListBridgeDomain, statusData } from '../../store/actions/bridge';
 
 export default function FormAddInterface({ data, idBridge, interfaceList }) {
   const dispatch = useDispatch();
@@ -29,7 +26,7 @@ export default function FormAddInterface({ data, idBridge, interfaceList }) {
     vmat
       .listNodeByBridgeDomain(idBridge)
       .then((res) => {
-        dispatch(fetchListNodeByBridgeDomain(res.data.message));
+        dispatch(setListBridgeDomain(res.data.message));
       })
       .catch((err) => {
         dispatch(statusData('error'));

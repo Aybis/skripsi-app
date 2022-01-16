@@ -4,6 +4,7 @@ import { SearchIcon } from '@heroicons/react/solid';
 import { Fragment } from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import { imageApi } from '../../helpers/Asset';
 import ToastHandler from '../../helpers/toast';
 
 const userNavigation = [
@@ -80,8 +81,8 @@ export default function Header({ handlerSidebar }) {
               <Menu.Button className="max-w-xs p-1 flex items-center text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 <span className="sr-only">Open user menu</span>
                 <img
-                  className="h-10 w-10 rounded-full"
-                  src={`https://ui-avatars.com/api/?name=${USER?.firstname}&background=F3f3f3&color=000&format=svg`}
+                  className="h-10 w-10 rounded-md"
+                  src={imageApi(USER?.firstname)}
                   alt=""
                 />
                 <p className="text-sm ml-2 font-semibold text-gray-600 hidden lg:block">

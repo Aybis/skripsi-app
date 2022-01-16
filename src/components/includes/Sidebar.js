@@ -4,14 +4,25 @@ import {
   ShareIcon,
   UserGroupIcon,
 } from '@heroicons/react/outline';
+import {
+  HomeIcon as HomeSolid,
+  ServerIcon as ServerSolid,
+  ShareIcon as ShareSolid,
+  UserGroupIcon as UserSolid,
+} from '@heroicons/react/solid';
 import { NavLink, useLocation } from 'react-router-dom';
 
 const navigation = [
-  { name: 'Dashboard', href: '/', icon: HomeIcon },
-  { name: 'Fabric', href: '/fabric', icon: ShareIcon },
-  { name: 'Bridge Domain', href: '/bridge', icon: ServerIcon },
-  { name: 'iBGP', href: '/ibgp', icon: ServerIcon },
-  { name: 'About Us', href: '/us', icon: UserGroupIcon },
+  { name: 'Dashboard', href: '/', icon: HomeIcon, isActive: HomeSolid },
+  { name: 'Fabric', href: '/fabric', icon: ShareIcon, isActive: ShareSolid },
+  {
+    name: 'Bridge Domain',
+    href: '/bridge',
+    icon: ServerIcon,
+    isActive: ServerSolid,
+  },
+  { name: 'iBGP', href: '/ibgp', icon: ServerIcon, isActive: ServerSolid },
+  { name: 'About Us', href: '/us', icon: UserGroupIcon, isActive: UserSolid },
 ];
 
 export default function Sidebar() {
@@ -61,15 +72,27 @@ export default function Sidebar() {
                       : 'text-gray-400 hover:bg-gray-50 hover:text-apps-primary',
                     'group rounded-md py-3 px-4 flex items-center font-semibold tracking-wide transition-all duration-300 ease-in-out',
                   )}>
-                  <item.icon
-                    className={classNames(
-                      location.pathname === item.href
-                        ? 'text-apps-primary'
-                        : 'text-gray-300 group-hover:text-apps-primary',
-                      'mr-3 flex-shrink-0 h-7 w-7',
-                    )}
-                    aria-hidden="true"
-                  />
+                  {location.pathname === item.href ? (
+                    <item.isActive
+                      className={classNames(
+                        location.pathname === item.href
+                          ? 'text-apps-primary'
+                          : 'text-gray-300 group-hover:text-apps-primary',
+                        'mr-3 flex-shrink-0 h-7 w-7',
+                      )}
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <item.icon
+                      className={classNames(
+                        location.pathname === item.href
+                          ? 'text-apps-primary'
+                          : 'text-gray-300 group-hover:text-apps-primary',
+                        'mr-3 flex-shrink-0 h-7 w-7',
+                      )}
+                      aria-hidden="true"
+                    />
+                  )}
                   {item.name}
                 </NavLink>
               ))}
