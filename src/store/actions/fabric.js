@@ -85,7 +85,10 @@ export const fetchNode = () => async (dispatch) => {
     })
     .catch((err) => {
       dispatch(messageData('error'));
-      ToastHandler('error', err.response.data.message ?? 'Something happenned');
+      ToastHandler(
+        'error',
+        err?.response?.data?.message ?? 'Something happenned',
+      );
     });
 };
 

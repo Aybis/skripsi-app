@@ -10,7 +10,6 @@ export default function ModalDelete({
   handlerClose,
   isSubmit,
   handlerDelete,
-  setShow,
 }) {
   return (
     <Transition.Root show={isShow} as={Fragment}>

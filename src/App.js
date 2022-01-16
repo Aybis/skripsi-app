@@ -11,7 +11,7 @@ import Home from './components/pages/Home';
 import Login from './components/pages/Login';
 import Ospf from './components/pages/Ospf';
 import Vxlan from './components/pages/Vxlan';
-import { getProfile } from './store/actions/user';
+import { setProfile } from './store/actions/user';
 import jwt_decode from 'jwt-decode';
 import AssociateBridge from './components/pages/AssociateBridge';
 
@@ -25,7 +25,7 @@ function App() {
     if (localStorage.getItem('VMAT:user')) {
       session = JSON.parse(localStorage.getItem('VMAT:user'));
       // masukkan data user ke dalam redux user
-      dispatch(getProfile(jwt_decode(session.token)));
+      dispatch(setProfile(jwt_decode(session.token)));
     }
   }, [dispatch]);
 

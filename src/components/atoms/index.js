@@ -9,3 +9,4 @@ export { default as ChildTable } from './ChildTable';
 export { default as FormAssociatedNode } from './FormAssociatedNode';
 export { default as FormAddBridgeDomain } from './FormAddBridgeDomain';
 export { default as TableOspf } from './TableOspf';
+export { default as FormAddInterface } from './FormAddInterface';

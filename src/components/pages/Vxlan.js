@@ -1,59 +1,103 @@
 import { PlusSmIcon } from '@heroicons/react/solid';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setTokenHeader } from '../../config/axios';
+import swal from 'sweetalert';
 import {
+  deleteBridge,
   fetchListBridgeDomain,
-  setName,
-  statusData,
+  setSelectBridge,
 } from '../../store/actions/bridge';
-import {
-  ChildTable,
-  FormAddBridgeDomain,
-  FormAssociatedNode,
-  Modals,
-} from '../atoms';
+import { FormAddBridgeDomain, FormAssociatedNode, Modals } from '../atoms';
+import ModalDelete from '../atoms/ModalDelete';
 import { Content, Layout } from '../includes';
 import { ListTableBridgeDomain } from '../molecules';
 
 export default function Vxlan({ history }) {
   const BRIDGE = useSelector((state) => state.bridge);
+  const [isSubmit, setisSubmit] = useState(false);
   const [showModal, setshowModal] = useState(false);
+  const [showAssociatedNode, setshowAssociatedNode] = useState(false);
   const [showModalDetail, setshowModalDetail] = useState(false);
-  const [modalAssociateNode, setmodalAssociateNode] = useState(false);
+  const [showDelete, setshowDelete] = useState(false);
+  const [dataDelete, setdataDelete] = useState({
+    id: '',
+    name: '',
+  });
   const dispatch = useDispatch();
 
   const handlerModalAssociateNode = (data) => {
-    setmodalAssociateNode(true);
-    dispatch(setName(data));
+    setshowAssociatedNode(true);
+    dispatch(setSelectBridge(data));
+  };
+
+  const handlerModalDelete = (data) => {
+    setshowDelete(true);
+    setdataDelete({
+      id: data._id,
+      name: data.bdName,
+    });
+  };
+
+  const handlerDelete = async (data) => {
+    setisSubmit(true);
+    try {
+      const result = await dispatch(deleteBridge({ idBridge: data.id }));
+      setisSubmit(false);
+      if (result.status === 200) {
+        swal('Yeay!', result.message, 'success');
+        setshowDelete(false);
+      } else {
+        swal('Oh No!', result.message, 'error');
+      }
+    } catch (error) {
+      swal('Oh No!', 'Something Happened!', 'error');
+    }
+    setisSubmit(false);
   };
 
   useEffect(() => {
-    dispatch(statusData('idle'));
     dispatch(fetchListBridgeDomain());
-    setTokenHeader();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
   return (
     <Layout>
       <Content title="BRIDGE DOMAIN">
         {/* Modal Add Bridge */}
-        <FormAddBridgeDomain show={showModal} handlerShow={setshowModal} />
+        <Modals
+          show={showModal}
+          handlerShow={setshowModal}
+          title={'Add Bridge Domain'}
+          isLoading={isSubmit}>
+          <FormAddBridgeDomain
+            handlerModal={setshowModal}
+            loading={isSubmit}
+            setLoading={setisSubmit}
+          />
+        </Modals>
 
         {/* Modal Associate Node */}
-        <FormAssociatedNode
-          show={modalAssociateNode}
-          handlerShow={setmodalAssociateNode}
-        />
+        <Modals
+          show={showAssociatedNode}
+          handlerShow={setshowAssociatedNode}
+          title={`Associated Node ${BRIDGE.selectBridge.bdName}`}
+          isLoading={isSubmit}>
+          <FormAssociatedNode
+            handlerModal={setshowAssociatedNode}
+            loading={isSubmit}
+            setLoading={setisSubmit}
+          />
+        </Modals>
 
         {/* Modal Detail List Bridge */}
         <Modals
           show={showModalDetail}
           handlerShow={setshowModalDetail}
-          title={BRIDGE.name.bdNname}>
-          <ChildTable data={BRIDGE.name} />
+          title={BRIDGE.selectBridge.bdNname}>
+          {/* <ChildTable data={BRIDGE.selectBridge} /> */}
         </Modals>
 
+        {/* List Table  */}
         <div className="mt-8">
           <div className="relative mb-6">
             <button
@@ -66,10 +110,19 @@ export default function Vxlan({ history }) {
             </button>
           </div>
           <ListTableBridgeDomain
+            handlerDelete={handlerModalDelete}
             handlerModalAssociateNode={handlerModalAssociateNode}
           />
         </div>
       </Content>
+
+      <ModalDelete
+        isShow={showDelete}
+        handlerClose={setshowDelete}
+        data={dataDelete}
+        isSubmit={isSubmit}
+        handlerDelete={handlerDelete}
+      />
     </Layout>
   );
 }

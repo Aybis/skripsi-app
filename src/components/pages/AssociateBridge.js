@@ -11,18 +11,22 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import swal from 'sweetalert';
-import vmat from '../../config/api/vmat';
-import { setTokenHeader } from '../../config/axios';
 import {
-  setListBridgeDomain,
-  setListNodeByBridgeDomain,
-  statusData,
+  deAssociatedNode,
+  fetchListInterfaceNode,
+  fetchListNodeByBridgeDomain,
+  setListSelectNodeByBridge,
 } from '../../store/actions/bridge';
-import FormAddInterface from '../atoms/FormAddInterface';
-import FormAssociatedNode from '../atoms/FormAssociatedNode';
-import LoadingIcon from '../atoms/LoadingIcon';
-import ModalWithClose from '../atoms/ModalWithClose';
-import RadioInterface from '../atoms/RadioInterface';
+import {
+  FormAddInterface,
+  FormAssociatedNode,
+  LoadingIcon,
+  Modals,
+  TableBody,
+  TableContent,
+  TableHeading,
+} from '../atoms';
+import ModalDelete from '../atoms/ModalDelete';
 import Content from '../includes/Content';
 import Layout from '../includes/Layout';
 
@@ -31,151 +35,61 @@ export default function AssociateBridge() {
   const history = useHistory();
   const dispatch = useDispatch();
   const BRIDGE = useSelector((state) => state.bridge);
-  const FABRIC = useSelector((state) => state.fabric);
-  console.log('idbridge', id);
-
-  const [bridgeDomain, setbridgeDomain] = useState('');
-  const [dataBridgeAndRouter, setdataBridgeAndRouter] = useState('');
-  const [dataInterface, setdataInterface] = useState([]);
-  const [modalAssociateNode, setmodalAssociateNode] = useState(false);
-  const [modalAssociateInterface, setmodalAssociateInterface] = useState(false);
-  const [modalDeassociateInterface, setmodalDeassociateInterface] =
-    useState(false);
-
-  const [form, setform] = useState({
-    idBridgeDomain: '',
-    idRouter: '',
+  const [isSubmit, setisSubmit] = useState(false);
+  const [showAssociatedNode, setshowAssociatedNode] = useState(false);
+  const [showAssociateInterface, setshowAssociateInterface] = useState(false);
+  const [showDelete, setshowDelete] = useState(false);
+  const [dataDelete, setdataDelete] = useState({
+    id: '',
+    name: '',
   });
+  console.log(BRIDGE);
 
-  // handler onchange digunakan untuk mendapatkan value dari form input
-  // const handlerOnChange = (event) => {
-  //   setform({
-  //     ...form,
-  //     [event.target.name]: event.target.value,
-  //   });
-  // };
-
-  const handlerAssociateInterfaceToBridge = (data) => {
-    let result =
-      FABRIC.dataNodes.length > 0 &&
-      FABRIC.dataNodes.filter((index) => index._id === data.idRouterListModel);
-
-    setdataInterface(result[0]);
-    setmodalAssociateInterface(true);
-    setdataBridgeAndRouter(data);
+  const handlerAddInterfaceBridge = (data) => {
+    setshowAssociateInterface(true);
+    dispatch(setListSelectNodeByBridge(data));
+    dispatch(fetchListInterfaceNode(data.idRouterListModel));
   };
 
-  const handlerUpdateAssociateNode = (id) => {
-    console.log('idbridge ha', id);
-    vmat
-      .listNodeByBridgeDomain(id)
-      .then((res) => {
-        dispatch(setListNodeByBridgeDomain(res.data.message));
-      })
-      .catch((err) => {
-        dispatch(statusData('error'));
-      });
+  const handlerModalDelete = (data) => {
+    setshowDelete(true);
+    setdataDelete({
+      idBridgeDomain: id,
+      idRouter: data.idRouterListModel,
+      name: data.routerName,
+    });
   };
 
-  const handlerDeassociateNode = (item) => {
-    form.idBridgeDomain = id;
-    form.idRouter = item.idRouterListModel;
-
-    console.log(form);
-    swal({
-      title: 'Are you sure?',
-      text: `Once deleted, you will not be able to recover this ${item.routerName}!`,
-      icon: 'warning',
-      buttons: {
-        text: 'Delete!',
-        closeModal: false,
-      },
-      dangerMode: true,
-    })
-      .then((willDelete) => {
-        if (willDelete) {
-          vmat
-            .deassociateNodeByBridgeDomain(form)
-            .then((res) => {
-              swal(
-                res.data.message ??
-                  'Poof! Your Associated Node has been deleted!',
-                {
-                  icon: 'success',
-                },
-              );
-              handlerUpdateAssociateNode(id);
-            })
-            .catch((err) => {
-              console.log(err.response.data.message);
-            });
-        } else {
-          swal('Your Associated Node is safe!');
-        }
-      })
-      .catch((err) => {
-        if (err) {
-          swal('Oh noes!', 'The AJAX request failed!', 'error');
-        } else {
-          swal.stopLoading();
-          swal.close();
-        }
-      });
+  const handlerDelete = async (data) => {
+    setisSubmit(true);
+    try {
+      const result = await dispatch(
+        deAssociatedNode({
+          idBridgeDomain: data.idBridgeDomain,
+          idRouter: data.idRouter,
+        }),
+      );
+      setisSubmit(false);
+      if (result.status === 200) {
+        swal('Yeay!', result.message, 'success');
+        setshowDelete(false);
+      } else {
+        swal('Oh No!', result.message, 'error');
+      }
+    } catch (error) {
+      swal('Oh No!', 'Something Happened!', 'error');
+    }
+    setisSubmit(false);
   };
 
   useEffect(() => {
-    dispatch(statusData('idle'));
-    setTokenHeader();
-    handlerUpdateAssociateNode(id);
-
-    vmat
-      .getListBridgeDomain()
-      .then((response) => {
-        dispatch(setListBridgeDomain(response.data.message));
-        let name = response.data.message.filter((index) => index._id === id);
-        setbridgeDomain(name[0]);
-      })
-      .catch((err) => {
-        dispatch(statusData('error'));
-      });
-
+    dispatch(fetchListNodeByBridgeDomain(id));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
   return (
     <Layout>
-      <Content title={`Associated Node ${bridgeDomain.bdName ?? ''}`}>
-        {/* Modal Associate Node */}
-        <ModalWithClose
-          show={modalAssociateNode}
-          handlerModal={() => setmodalAssociateNode(false)}
-          title="Associated Node">
-          <FormAssociatedNode data={bridgeDomain} />
-        </ModalWithClose>
-        {/* End Modal Associate Node */}
-
-        {/* Modal Associate Interface */}
-        <ModalWithClose
-          show={modalAssociateInterface}
-          handlerModal={() => setmodalAssociateInterface(false)}
-          title="Associated Interface to Node">
-          <FormAddInterface
-            data={dataBridgeAndRouter}
-            idBridge={id}
-            interfaceList={dataInterface}
-          />
-        </ModalWithClose>
-        {/* End Modal Associate interface */}
-
-        {/* Modal Deassociate Interface */}
-        <ModalWithClose
-          show={modalDeassociateInterface}
-          handlerModal={() => setmodalDeassociateInterface(false)}
-          title="Deassociated Interface">
-          <RadioInterface />
-        </ModalWithClose>
-        {/* Modal Deassociate Interface */}
-
+      <Content title={`Associated Node ${BRIDGE.selectBridge.bdName ?? ''}`}>
         <motion.div
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
@@ -196,110 +110,130 @@ export default function AssociateBridge() {
 
               <div>
                 <button
-                  onClick={() => setmodalAssociateNode(true)}
+                  onClick={() => setshowAssociatedNode(true)}
                   className="inline-flex sm:ml-3 mt-4 sm:mt-0 items-center justify-center gap-2 px-6 py-3 bg-apps-primary hover:bg-blue-600 focus:outline-none rounded">
                   <PlusSmIcon className="h-5 w-5 text-white" />
                   <p className="text-sm font-medium leading-none text-white">
-                    Add Associate Node
+                    Add New Associate Node
                   </p>
                 </button>
               </div>
             </div>
           </div>
           {/* Start Table */}
-          <div className="bg-white shadow px-4 md:px-10 pt-4 md:pt-7 pb-5 overflow-x-auto">
-            {BRIDGE.status === 'idle' ? (
-              <div className="flex justify-center items-center">
-                <LoadingIcon color="text-apps-primary" height={8} width={8} />
-              </div>
-            ) : (
-              <table className="w-full whitespace-nowrap">
-                <thead className="bg-warmGray-50">
-                  <tr className="h-16 w-full text-sm leading-none text-gray-500 uppercase">
-                    <th className="font-semibold tracking-wide text-left pl-4">
-                      No
-                    </th>
-                    <th className="font-semibold tracking-wide text-left pl-12">
-                      Associated Node
-                    </th>
-                    <th className="font-semibold tracking-wide text-left pl-12">
-                      Interface
-                    </th>
-                    <th className="font-semibold tracking-wide text-left pl-20"></th>
-                  </tr>
-                </thead>
-                <tbody className="w-full">
-                  {BRIDGE.dataNodeByBridgeDomain.length > 0 ? (
-                    BRIDGE.dataNodeByBridgeDomain.map((item, index) => (
-                      <tr
-                        key={Math.random()}
-                        className="h-20 text-sm leading-none text-gray-800 bg-white hover:bg-gray-100 border-b border-t border-gray-100">
-                        <td className="pl-4">
-                          <p className="text-sm font-medium leading-none text-gray-800">
-                            {index + 1}
-                          </p>
-                        </td>
-                        <td className="pl-4">
-                          <div className="flex items-center">
-                            <div className="w-10 h-10">
-                              <ServerIcon className="text-gray-500 h-8 w-8" />
-                            </div>
-                            <div className="pl-4">
-                              <p className="font-semibold text-gray-800 tracking-wide">
-                                {item.routerName}
-                              </p>
-                              <p className="text-xs leading-3 text-gray-400 pt-2">
-                                {item.bdName}
-                              </p>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="pl-12">
-                          <p className="text-sm font-medium leading-none text-gray-800">
-                            {item.interfaceMember.length > 0
-                              ? item.interfaceMember.map((item) => `${item},  `)
-                              : 'Belum ada interface'}
-                          </p>
-                        </td>
-                        <td className="px-7 2xl:px-0 flex flex-col gap-3 py-2">
-                          <button
-                            onClick={() => handlerDeassociateNode(item)}
-                            className="flex gap-1 items-center text-red-600 hover:text-red-900 font-medium">
-                            <TrashIcon className="h-4 w-4 " />
-                            Node
-                          </button>
 
-                          <button
-                            onClick={() =>
-                              handlerAssociateInterfaceToBridge(item)
-                            }
-                            className="flex gap-1 items-center text-green-600 hover:text-green-700 font-medium">
-                            <PlusIcon className="h-4 w-4 " />
-                            Interface
-                          </button>
-                          <button
-                            onClick={() => setmodalDeassociateInterface(true)}
-                            className="flex gap-1 items-center text-red-600 hover:text-red-700 font-medium">
-                            <MinusIcon className="h-4 w-4 " />
-                            Interface
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan={4} className="py-2 px-4">
-                        Data Kosong
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+          <TableHeading
+            theading={['No', 'Associated Node', 'Interface', 'Action']}>
+            {BRIDGE.loading ? (
+              <TableBody>
+                <TableContent colSpan={4} rowSpan={4}>
+                  <div className="flex justify-center items-center">
+                    <LoadingIcon
+                      color="text-apps-primary"
+                      height={8}
+                      width={8}
+                    />
+                  </div>
+                </TableContent>
+              </TableBody>
+            ) : BRIDGE.listNodeByBridge.length > 0 ? (
+              BRIDGE.listNodeByBridge.map((item, index) => (
+                <TableBody key={Math.random()}>
+                  <TableContent>{index + 1}</TableContent>
+                  <TableContent>
+                    <div className="flex items-center">
+                      <div className="w-10 h-10">
+                        <ServerIcon className="text-gray-500 h-8 w-8" />
+                      </div>
+                      <div className="pl-4">
+                        <p className="font-semibold text-gray-800 tracking-wide">
+                          {item.routerName}
+                        </p>
+                        <p className="text-xs leading-3 text-gray-400 pt-2">
+                          {item.bdName}
+                        </p>
+                      </div>
+                    </div>
+                  </TableContent>
+                  <TableContent>
+                    <p className="text-sm font-medium leading-none text-gray-800 text-center">
+                      {item.interfaceMember.length > 0
+                        ? item.interfaceMember.map((item) => `${item},  `)
+                        : 'Belum ada interface'}
+                    </p>
+                  </TableContent>
+                  <TableContent>
+                    <div className="flex flex-col gap-2 p-4">
+                      <button
+                        onClick={() => handlerModalDelete(item)}
+                        className="flex gap-1 items-center text-red-600 hover:text-red-900 font-medium">
+                        <TrashIcon className="h-4 w-4 " />
+                        Deassociate Node
+                      </button>
+
+                      <button
+                        onClick={() => handlerAddInterfaceBridge(item)}
+                        className="flex gap-1 items-center text-green-600 hover:text-green-700 font-medium">
+                        <PlusIcon className="h-4 w-4 " />
+                        Add Interface
+                      </button>
+                      <button className="flex gap-1 items-center text-red-600 hover:text-red-700 font-medium">
+                        <MinusIcon className="h-4 w-4 " />
+                        Interface
+                      </button>
+                    </div>
+                  </TableContent>
+                </TableBody>
+              ))
+            ) : (
+              <TableBody>
+                <TableContent colSpan={4} rowSpan={4}>
+                  <div className="flex justify-center items-center">
+                    <p>Belum Ada Node</p>
+                  </div>
+                </TableContent>
+              </TableBody>
             )}
-          </div>
+          </TableHeading>
+
           {/* End Table */}
         </div>
       </Content>
+
+      {/* Modal Associate Node */}
+      <Modals
+        show={showAssociatedNode}
+        handlerShow={setshowAssociatedNode}
+        title={`Associated Node ${BRIDGE.selectBridge.bdName}`}
+        isLoading={isSubmit}>
+        <FormAssociatedNode
+          handlerModal={setshowAssociatedNode}
+          loading={isSubmit}
+          setLoading={setisSubmit}
+        />
+      </Modals>
+
+      {/* Modal Associate Node */}
+      <Modals
+        show={showAssociateInterface}
+        handlerShow={setshowAssociateInterface}
+        title={`Associated Interface with Bridge ${BRIDGE.selectBridge.bdName}`}
+        isLoading={isSubmit}>
+        <FormAddInterface
+          handlerModal={setshowAssociateInterface}
+          loading={isSubmit}
+          setLoading={setisSubmit}
+        />
+      </Modals>
+
+      {/* Modal Deassociate  Node */}
+      <ModalDelete
+        isShow={showDelete}
+        handlerClose={setshowDelete}
+        data={dataDelete}
+        isSubmit={isSubmit}
+        handlerDelete={handlerDelete}
+      />
     </Layout>
   );
 }

@@ -1,47 +1,68 @@
 import * as type from '../types/bridge';
 
 const initialState = {
-  dataBridgeDomain: {},
-  dataNodeByBridgeDomain: {},
-  dataInterfaceByBridgeDomain: {},
-  name: {},
+  //new object
+  listBridge: {},
+  listNodeByBridge: {},
+  listInterfaceByBridge: {},
+  selectNodeByBridge: {},
+  selectInterfaceByBridge: {},
+  listInterface: {},
+  selectBridge: {},
+  total: 0,
   loading: false,
   error: false,
-  status: 'idle',
-  total: 0,
   message: '',
 };
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default function (state = initialState, action) {
   switch (action.type) {
-    case type.LIST_BRIDGE_DOMAIN:
+    //new object
+
+    case type.LIST_BRIDGE:
       return {
         ...state,
-        dataBridgeDomain: action.payload ?? {},
-        total: action.payload.length ?? 0,
-        status: 'ok',
+        listBridge: action.payload,
+        total: action.length,
       };
 
-    case type.LIST_NODE_BY_BRIDGE_DOMAIN:
+    case type.LIST_NODE_BY_BRIDGE:
       return {
         ...state,
-        dataNodeByBridgeDomain: action.payload ?? {},
-        status: 'ok',
+        listNodeByBridge: action.payload,
       };
 
-    case type.LIST_INTERFACE_BY_BRIDGE_DOMAIN:
+    case type.LIST_SELECT_NODE_BY_BRIDGE:
       return {
         ...state,
-        dataInterfaceByBridgeDomain: action.payload ?? {},
-        status: 'ok',
+        selectNodeByBridge: action.payload,
       };
 
-    case type.NAME:
+    case type.LIST_INTERFACE_BY_BRIDGE:
       return {
         ...state,
-        name: action.payload,
+        listInterfaceByBridge: action.payload,
       };
+
+    case type.LIST_INTERFAE:
+      return {
+        ...state,
+        listInterface: action.payload,
+      };
+
+    case type.LIST_SELECT_INTERFACE_BY_BRIDGE:
+      return {
+        ...state,
+        selectInterfaceByBridge: action.payload,
+      };
+
+    case type.SELECT_BRIDGE:
+      return {
+        ...state,
+        selectBridge: action.payload,
+      };
+
     case type.LOADING:
       return {
         ...state,
@@ -53,13 +74,7 @@ export default function (state = initialState, action) {
         error: action.payload,
       };
 
-    case type.STATUS_DATA:
-      return {
-        ...state,
-        status: action.payload,
-      };
-
-    case type.MESSAGE_DATA:
+    case type.MESSAGE:
       return {
         ...state,
         message: action.payload,

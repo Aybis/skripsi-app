@@ -3,12 +3,12 @@ import vmat from '../../config/api/vmat';
 import jwt_decode from 'jwt-decode';
 import Cookies from 'js-cookie';
 
-export const getProfile = (profile = {}) => ({
+export const setProfile = (profile = {}) => ({
   type: type.PROFILE,
   payload: profile,
 });
 
-export const getToken = (token = {}) => ({
+export const setTokenUser = (token = {}) => ({
   type: type.TOKEN,
   payload: token,
 });
@@ -32,8 +32,8 @@ export const userLogin = (data) => async (dispatch) => {
     const result = await vmat.login(data);
 
     if (result.status === 200) {
-      dispatch(getToken(result.data.token));
-      dispatch(getProfile(jwt_decode(result.data.token)));
+      dispatch(setTokenUser(result.data.token));
+      dispatch(setProfile(jwt_decode(result.data.token)));
       localStorage.setItem(
         'VMAT:user',
         JSON.stringify({

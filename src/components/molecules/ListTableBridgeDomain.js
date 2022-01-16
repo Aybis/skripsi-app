@@ -1,18 +1,20 @@
 import { DatabaseIcon, PlusIcon, TrashIcon } from '@heroicons/react/solid';
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { setName } from '../../store/actions/bridge';
+import { setSelectBridge } from '../../store/actions/bridge';
 import { LoadingIcon, TableBody, TableContent, TableHeading } from '../atoms';
 
-export default function ListTableBridgeDomain({ handlerModalAssociateNode }) {
+export default function ListTableBridgeDomain({
+  handlerModalAssociateNode,
+  handlerDelete,
+}) {
   const BRIDGE = useSelector((state) => state.bridge);
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const handlerClick = (data) => {
-    dispatch(setName(data));
+  const handlerBridgeDetail = (data) => {
+    dispatch(setSelectBridge(data));
     history.push(`/bridge/associate/${data._id}`);
   };
 
@@ -20,7 +22,7 @@ export default function ListTableBridgeDomain({ handlerModalAssociateNode }) {
     <TableHeading
       theading={['No', 'Bridge domain', 'bridge id', 'vni', ' ']}
       addClass={'text-left'}>
-      {BRIDGE.status === 'idle' ? (
+      {BRIDGE.loading ? (
         <TableBody>
           <TableContent
             colSpan={5}
@@ -29,11 +31,11 @@ export default function ListTableBridgeDomain({ handlerModalAssociateNode }) {
             <LoadingIcon color="text-blue-600" height={6} width={6} />
           </TableContent>
         </TableBody>
-      ) : BRIDGE.dataBridgeDomain.length > 0 ? (
-        BRIDGE.dataBridgeDomain.map((item, index) => (
+      ) : BRIDGE.listBridge.length > 0 ? (
+        BRIDGE.listBridge.map((item, index) => (
           <TableBody key={Math.random()}>
             <TableContent>{index + 1}</TableContent>
-            <TableContent handlerClick={() => handlerClick(item)}>
+            <TableContent handlerClick={() => handlerBridgeDetail(item)}>
               <div className="flex items-center cursor-pointer">
                 <div className="w-10 h-10">
                   <DatabaseIcon className="text-blue-600 h-8 w-8" />
@@ -56,7 +58,7 @@ export default function ListTableBridgeDomain({ handlerModalAssociateNode }) {
                   Associate Node
                 </button>
                 <button
-                  onClick={() => alert('test -')}
+                  onClick={() => handlerDelete(item)}
                   className="flex gap-1 items-center text-red-600 hover:text-red-900 font-medium">
                   <TrashIcon className="h-4 w-4 " />
                   Delete Bridge

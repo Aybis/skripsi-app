@@ -9,7 +9,7 @@ import bridge from './bridge';
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['fabric'],
+  whitelist: ['fabric', 'user', 'bridge'],
 };
 
 const rootReducer = combineReducers({

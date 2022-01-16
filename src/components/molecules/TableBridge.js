@@ -23,8 +23,8 @@ export default function TableBridge() {
             <TableContent>{item.bdName}</TableContent>
             <TableContent>{item.vniId}</TableContent>
             <TableContent>
-              {item.interfaceMember.length > 0
-                ? item.interfaceMember.map((item) => item).join('/n')
+              {item?.interfaceMember?.length > 0
+                ? item?.interfaceMember?.map((item) => item).join('/n')
                 : 'Belum ada interface'}
             </TableContent>
           </TableBody>

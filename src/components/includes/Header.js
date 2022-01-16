@@ -22,7 +22,7 @@ const handlerLogOut = (val) => {
         .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
     });
     // remove token
-    localStorage.removeItem('VMAT:user');
+    localStorage.clear();
     ToastHandler('success', 'Logout Berhasil');
 
     // redirect link
@@ -82,12 +82,12 @@ export default function Header({ handlerSidebar }) {
                 <span className="sr-only">Open user menu</span>
                 <img
                   className="h-10 w-10 rounded-md"
-                  src={imageApi(USER?.firstname)}
-                  alt=""
+                  src={imageApi(USER?.profile?.firstname)}
+                  alt={USER?.profile?._id}
                 />
                 <p className="text-sm ml-2 font-semibold text-gray-600 hidden lg:block">
-                  {USER?.firstname
-                    ? USER.firstname + ' ' + USER.lastname
+                  {USER?.profile?.firstname
+                    ? USER?.profile?.firstname + ' ' + USER?.profile?.lastname
                     : 'Anonymous'}
                 </p>
               </Menu.Button>
