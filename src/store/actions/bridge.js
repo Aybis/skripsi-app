@@ -64,8 +64,8 @@ export const fetchListBridgeDomain = () => async (dispatch) => {
   const result = await vmat
     .getListBridgeDomain()
     .then((response) => {
-      dispatch(setListBridge(response.data.message ?? {}));
-      return response.data;
+      dispatch(setListBridge(response.data.message));
+      return response.data.message;
     })
     .catch((err) => {
       dispatch(setMessage('error'));
@@ -78,12 +78,12 @@ export const fetchListBridgeDomain = () => async (dispatch) => {
 
 export const fetchListNodeByBridgeDomain = (data) => async (dispatch) => {
   dispatch(setLoading(true));
-  console.log(data);
   setTokenHeader();
   await vmat
     .listNodeByBridgeDomain(data)
     .then((res) => {
       dispatch(setListNodeByBridge(res.data.message));
+      dispatch(setLoading(false));
     })
     .catch((err) => {
       dispatch(setError(true));
@@ -234,6 +234,40 @@ export const insertInterfaceBridge = (data) => async (dispatch) => {
         };
       })
       .catch((err) => {
+        return {
+          status: err?.response?.status ?? 400,
+          message: err?.response?.data?.message ?? 'Something Happened!',
+        };
+      });
+
+    return result;
+  } catch (error) {
+    return {
+      status: error.status ?? 400,
+      message: error?.response?.data?.message ?? 'Something Happened!',
+    };
+  }
+};
+
+export const deAssociatedInterface = (data) => async (dispatch) => {
+  setTokenHeader();
+  try {
+    const result = await vmat
+      .deleteInterfaceByBridgeDomain({
+        interface: data.interface,
+        idBridge: data.idBridge,
+        idRouter: data.idRouter,
+      })
+      .then((res) => {
+        dispatch(fetchListNodeByBridgeDomain(data.idBridgeDomain));
+        return {
+          status: res.status ?? 200,
+          message: res?.data?.message ?? 'Deassociated Interface Succesfull!',
+        };
+      })
+      .catch((err) => {
+        dispatch(setError(true));
+        dispatch(setMessage('error'));
         return {
           status: err?.response?.status ?? 400,
           message: err?.response?.data?.message ?? 'Something Happened!',

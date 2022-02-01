@@ -33,7 +33,7 @@ export default function Sidebar() {
   }
 
   return (
-    <div className="hidden md:flex md:flex-shrink-0">
+    <div className="hidden md:flex md:flex-shrink-0 bg-white">
       <div className="w-64 flex flex-col ">
         {/* Sidebar component, swap this element with another sidebar if you like */}
         <div className="border-r border-gray-200 pt-5 pb-4 flex flex-col flex-grow overflow-y-auto">
@@ -68,9 +68,9 @@ export default function Sidebar() {
                   exact
                   className={classNames(
                     location.pathname === item.href
-                      ? 'bg-gray-100 text-apps-primary'
+                      ? 'bg-gray-50 text-apps-primary'
                       : 'text-gray-400 hover:bg-gray-50 hover:text-apps-primary',
-                    'group rounded-md py-3 px-4 flex items-center font-semibold tracking-wide transition-all duration-300 ease-in-out',
+                    'group rounded-md py-3 px-4 flex items-center font-semibold tracking-wide transition-all duration-300 ease-in-out text-sm',
                   )}>
                   {location.pathname === item.href ? (
                     <item.isActive
@@ -78,7 +78,7 @@ export default function Sidebar() {
                         location.pathname === item.href
                           ? 'text-apps-primary'
                           : 'text-gray-300 group-hover:text-apps-primary',
-                        'mr-3 flex-shrink-0 h-7 w-7',
+                        'mr-3 flex-shrink-0 h-5 w-5',
                       )}
                       aria-hidden="true"
                     />
@@ -88,7 +88,7 @@ export default function Sidebar() {
                         location.pathname === item.href
                           ? 'text-apps-primary'
                           : 'text-gray-300 group-hover:text-apps-primary',
-                        'mr-3 flex-shrink-0 h-7 w-7',
+                        'mr-3 flex-shrink-0 h-5 w-5',
                       )}
                       aria-hidden="true"
                     />

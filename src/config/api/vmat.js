@@ -23,14 +23,23 @@ export default {
   // params idBridge
   deleteBridgeDomain: (data) =>
     axios.post('configure/delete-bridge-domain', data),
+
+  // endpoint asso and deasso node bridge
+  listNodeByBridgeDomain: (idBridge) =>
+    axios.get(`configure/member-of-bd/${idBridge}`),
   addNodeByBridgeDomain: (data) =>
     axios.post('configure/add-bridge-domain-member', data),
   deassociateNodeByBridgeDomain: (data) =>
     axios.post('configure/remove-bridge-domain-member', data),
+
+  // endpoint asso and deasso interface
   addInterfaceByBridgeDomain: (data) =>
     axios.post('configure/assoc-int-vxlan', data),
-  listNodeByBridgeDomain: (idBridge) =>
-    axios.get(`configure/member-of-bd/${idBridge}`),
+  deleteInterfaceByBridgeDomain: (data) =>
+    axios.post('configure/deassoc-int-vxlan', data),
 
-  //   ospf end point
+  //   ibgp end point
+  listIbgp: () => axios.get('configure/ibgp-list'),
+  addIbgp: (data) => axios.post('configure/ibgp-add-address', data),
+  deleteIbgp: (data) => axios.post('configure/ibgp-remove-address', data),
 };

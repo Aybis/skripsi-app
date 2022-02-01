@@ -1,10 +1,10 @@
 import { Menu, Transition } from '@headlessui/react';
 import { BellIcon, MenuAlt2Icon } from '@heroicons/react/outline';
-import { SearchIcon } from '@heroicons/react/solid';
 import { Fragment } from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { imageApi } from '../../helpers/Asset';
+import { convertDate } from '../../helpers/convertDate';
 import ToastHandler from '../../helpers/toast';
 
 const userNavigation = [
@@ -39,7 +39,7 @@ function classNames(...classes) {
 export default function Header({ handlerSidebar }) {
   const USER = useSelector((state) => state.user);
   return (
-    <div className="relative z-10 flex-shrink-0 h-16 bg-white border-b border-gray-200 flex">
+    <div className="relative z-10 flex-shrink-0 h-16 bg-white border-b border-gray-200 flex px-6">
       <button
         type="button"
         className="border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
@@ -48,29 +48,15 @@ export default function Header({ handlerSidebar }) {
         <MenuAlt2Icon className="h-6 w-6" aria-hidden="true" />
       </button>
       <div className="flex-1 flex justify-between px-4 md:px-0">
-        <div className="flex-1 flex">
-          <form className="w-full flex md:ml-0" action="#" method="GET">
-            <label htmlFor="search-field" className="sr-only">
-              Search ...
-            </label>
-            <div className="relative w-full text-gray-400 focus-within:text-gray-600">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center">
-                <SearchIcon className="h-5 w-5" aria-hidden="true" />
-              </div>
-              <input
-                id="search-field"
-                className="block h-full w-full border-transparent py-2 pl-8 pr-3 text-gray-900 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-0 focus:border-transparent sm:text-sm"
-                placeholder="Search"
-                type="search"
-                name="search"
-              />
-            </div>
-          </form>
+        <div className="flex-1 flex items-center">
+          <p className="text-warmGray-400 text-sm font-light">
+            {convertDate('tanggalHari')}
+          </p>
         </div>
         <div className="ml-4 flex items-center md:ml-6">
           <button
             type="button"
-            className="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            className="hidden bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
             <span className="sr-only">View notifications</span>
             <BellIcon className="h-6 w-6" aria-hidden="true" />
           </button>
@@ -85,7 +71,7 @@ export default function Header({ handlerSidebar }) {
                   src={imageApi(USER?.profile?.firstname)}
                   alt={USER?.profile?._id}
                 />
-                <p className="text-sm ml-2 font-semibold text-gray-600 hidden lg:block">
+                <p className="text-sm ml-2 font-medium text-gray-700 hidden lg:block">
                   {USER?.profile?.firstname
                     ? USER?.profile?.firstname + ' ' + USER?.profile?.lastname
                     : 'Anonymous'}

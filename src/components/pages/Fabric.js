@@ -1,3 +1,4 @@
+import { CloudIcon, PlusSmIcon } from '@heroicons/react/solid';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import swal from 'sweetalert';
@@ -11,13 +12,12 @@ import {
   messageData,
   setTunnel,
 } from '../../store/actions/fabric';
-import { FormAddFabric, FormDeployTunnel, Modals } from '../atoms';
+import { Button, FormAddFabric, FormDeployTunnel, Modals } from '../atoms';
 import LoadingIcon from '../atoms/LoadingIcon';
 import ModalDelete from '../atoms/ModalDelete';
-import Table from '../atoms/Table';
 import Content from '../includes/Content';
 import Layout from '../includes/Layout';
-import { TableBridge } from '../molecules';
+import { SectionTableFabric, TableBridge } from '../molecules';
 
 export default function Fabric() {
   const FABRIC = useSelector((state) => state.fabric);
@@ -140,7 +140,6 @@ export default function Fabric() {
     <Layout>
       <Content title="Fabric">
         {/* Modal Deploy  */}
-
         <FormDeployTunnel
           show={show}
           title={'Deploy Tunnel'}
@@ -180,25 +179,25 @@ export default function Fabric() {
           handlerDelete={handlerDeleteNode}
         />
 
-        <div className="w-full mt-8">
-          <div className="w-full flex justify-between items-center mb-10">
-            <h2 className="text-xl font-semibold text-gray-900">
-              List Manage Fabric
-            </h2>
+        <div className="w-full mt-8 bg-white p-4 rounded-md">
+          <div className="w-full flex justify-between items-center mb-6">
             {FABRIC.message === 'ok' && !FABRIC.tunnel ? (
-              <button
-                onClick={() => setshow(true)}
+              <Button
                 disabled={FABRIC.tunnel}
-                className={`bg-apps-primary flex gap-2 rounded-md px-4 py-2 text-white hover:bg-blue-700 transition-all duration-300 ease-in-out font-medium disabled:opacity-50 `}>
+                handlerClick={() => setshow(true)}>
+                <CloudIcon className="h-5" />
                 Deploy Tunnel
-              </button>
+              </Button>
             ) : (
-              ''
+              <Button handlerClick={handlerAddFabric}>
+                <PlusSmIcon className="h-5 w-5 text-white" />
+                Add Node to Fabric
+              </Button>
             )}
           </div>
 
           {FABRIC.tunnel ? (
-            <Table
+            <SectionTableFabric
               handlerOpenModal={() => handlerAddFabric()}
               handlerViewVxlanById={handlerGetListVxlanById}
               handlerDelete={handlerModalDelete}

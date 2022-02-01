@@ -49,8 +49,8 @@ export default function ModalDelete({
                   type="button"
                   disabled={isSubmit}
                   className={[
-                    'bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-40',
-                    isSubmit && 'cursor-not-allowed',
+                    'bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-40',
+                    isSubmit ? 'cursor-not-allowed' : 'cursor-pointer',
                   ].join(' ')}
                   onClick={() => handlerClose(false)}>
                   <span className="sr-only">Close</span>
@@ -72,7 +72,7 @@ export default function ModalDelete({
                   </Dialog.Title>
                   <div className="mt-4 mb-8">
                     <p className=" text-gray-500">
-                      Are you sure you want to delete
+                      Are you sure you want to remove
                       <br />
                       <span className="mt-1 font-semibold underline text-gray-800">
                         {data.name}
@@ -86,8 +86,8 @@ export default function ModalDelete({
                 <button
                   type="button"
                   disabled={isSubmit}
-                  className={`disabled:opacity-40 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm ${
-                    isSubmit && 'cursor-not-allowed'
+                  className={`disabled:opacity-40 w-full inline-flex justify-center rounded-md border border-transparent px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm ${
+                    isSubmit ? 'cursor-not-allowed' : 'cursor-pointer'
                   }`}
                   onClick={() => handlerDelete(data)}>
                   {isSubmit && <LoadingIcon />}
@@ -97,8 +97,8 @@ export default function ModalDelete({
                   type="button"
                   disabled={isSubmit}
                   className={[
-                    'disabled:opacity-40 mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm',
-                    isSubmit && 'cursor-not-allowed',
+                    'disabled:opacity-40 mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 px-4 py-2 bg-warmGray-50 text-base font-medium text-gray-700 hover:bg-warmGray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:w-auto sm:text-sm',
+                    isSubmit ? 'cursor-not-allowed' : 'cursor-pointer',
                   ].join(' ')}
                   onClick={() => handlerClose(false)}>
                   Cancel

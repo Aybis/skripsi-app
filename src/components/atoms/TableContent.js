@@ -16,7 +16,10 @@ export default function TableContent({
       colSpan={colSpan}
       className={[addClassRow].join(' ')}>
       <div
-        className={['font-medium text-gray-800 px-4', addClassChild].join(' ')}>
+        className={[
+          'px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-800',
+          addClassChild,
+        ].join(' ')}>
         {children}
       </div>
     </td>

@@ -64,13 +64,13 @@ export const setError = (data) => ({
 export const checkUnderlay = () => async (dispatch) => {
   dispatch(setTunnel(false));
   setTokenHeader();
-  await vmat
+  return await vmat
     .checkUndelay()
     .then((response) => {
-      dispatch(setTunnel(false));
+      dispatch(setTunnel(response.data.success ? false : true));
     })
     .catch((err) => {
-      dispatch(setTunnel(true));
+      return err;
     });
 };
 

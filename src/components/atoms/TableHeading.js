@@ -2,15 +2,20 @@ import React from 'react';
 
 export default function Tables({ theading, children, addClass }) {
   return (
-    <div className="bg-white pt-4 md:pt-4 pb-5 overflow-x-auto">
-      <table className="w-full whitespace-nowrap">
-        <thead className="bg-warmGray-100">
-          <tr className="h-16 w-full leading-none text-gray-400 border-b-2 border-gray-200">
+    <div
+      className="overflow-auto border-b-2 border-warmGray-200"
+      style={{
+        maxHeight: '40rem',
+      }}>
+      <table className="min-w-full divide-y divide-gray-200 relative h-full">
+        <thead className="bg-blue-100 sticky top-0">
+          <tr className="sticky top-0 h-16 w-full leading-none text-gray-400 border-b-2 border-gray-200">
             {theading.map((item) => (
               <th
                 key={Math.random()}
+                scope="col"
                 className={[
-                  'font-semibold tracking-wide uppercase px-4',
+                  'px-4 py-3 text-left text-xs font-semibold text-gray-900 uppercase  whitespace-nowrap',
                   addClass,
                 ].join(' ')}>
                 {item}
@@ -18,7 +23,7 @@ export default function Tables({ theading, children, addClass }) {
             ))}
           </tr>
         </thead>
-        <tbody className="w-full">{children}</tbody>
+        <tbody className="bg-white divide-y divide-gray-200">{children}</tbody>
       </table>
     </div>
   );

@@ -8,7 +8,7 @@ export default function Layout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="h-screen bg-white overflow-hidden flex">
+    <div className="h-screen bg-warmGray-50 overflow-hidden flex">
       <Transition.Root show={sidebarOpen} as={Fragment}>
         <Dialog
           as="div"
@@ -33,9 +33,9 @@ export default function Layout({ children }) {
 
       {/* Static sidebar for desktop */}
       <Sidebar />
-      <div className="flex-1 px-6 py-4 w-0 flex flex-col md:px-8">
+      <div className="flex-1 w-0 flex flex-col">
         <Header handlerSidebar={() => setSidebarOpen(true)} />
-        {children}
+        <div className="relative py-4 px-6 overflow-auto">{children}</div>
       </div>
     </div>
   );

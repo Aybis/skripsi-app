@@ -2,7 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import swal from 'sweetalert';
 import { LoadingIcon } from '.';
-import { associateNode } from '../../store/actions/bridge';
+import {
+  associateNode,
+  fetchListNodeByBridgeDomain,
+} from '../../store/actions/bridge';
 
 export default function FormAssociatedNode({
   loading,
@@ -32,6 +35,7 @@ export default function FormAssociatedNode({
     try {
       const result = await dispatch(associateNode(form));
       if (result.status === 200) {
+        dispatch(fetchListNodeByBridgeDomain(BRIDGE.selectBridge._id));
         swal('Yeay!', result.message, 'success');
         handlerModal(false);
       } else {
@@ -43,7 +47,7 @@ export default function FormAssociatedNode({
     setLoading(false);
   };
 
-  useEffect(() => {}, [dispatch, BRIDGE]);
+  useEffect(() => {}, [dispatch]);
 
   return (
     <form onSubmit={handlerSubmit} className="mt-4">
@@ -59,7 +63,7 @@ export default function FormAssociatedNode({
               type="text"
               disabled
               value={BRIDGE.selectBridge.bdName}
-              className="max-w-lg bg-gray-200 block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 font-medium sm:max-w-xs sm:text-sm border-gray-300 rounded-md placeholder-gray-400 placeholder-opacity-60"
+              className="max-w-lg bg-gray-200 block w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 font-medium sm:max-w-xs sm:text-sm border-gray-300 rounded-md placeholder-gray-400 placeholder-opacity-60"
             />
           </div>
         </div>
@@ -76,7 +80,7 @@ export default function FormAssociatedNode({
               name="idRouter"
               defaultValue={form.idRouter || ''}
               onChange={handlerOnChange}
-              className="max-w-lg block focus:ring-indigo-500 focus:border-indigo-500 w-full shadow-sm sm:max-w-xs sm:text-sm border-gray-300 rounded-md">
+              className="max-w-lg block focus:ring-blue-500 focus:border-blue-500 w-full shadow-sm sm:max-w-xs sm:text-sm border-gray-300 rounded-md">
               <option disabled value="">
                 Pilih Node
               </option>

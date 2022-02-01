@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import swal from 'sweetalert';
-import { LoadingIcon } from '.';
 import {
+  deAssociatedInterface,
   fetchListNodeByBridgeDomain,
-  insertInterfaceBridge,
 } from '../../store/actions/bridge';
+import { LoadingIcon } from '../atoms';
 
-export default function FormAddInterface({
+export default function FormDeleteInterface({
   handlerModal,
   loading,
   setLoading,
+  data,
 }) {
   const dispatch = useDispatch();
   const BRIDGE = useSelector((state) => state.bridge);
 
   const [form, setform] = useState({
-    interface: '',
+    interface: data.interface,
     idBridge: '',
     idRouter: '',
   });
@@ -34,7 +35,7 @@ export default function FormAddInterface({
     form.idRouter = BRIDGE.selectNodeByBridge._id;
     setLoading(true);
     try {
-      const result = await dispatch(insertInterfaceBridge(form));
+      const result = await dispatch(deAssociatedInterface(form));
 
       if (result.status === 200) {
         dispatch(fetchListNodeByBridgeDomain(BRIDGE.selectBridge._id));
@@ -80,7 +81,7 @@ export default function FormAddInterface({
             <input
               type="text"
               disabled
-              value={BRIDGE.selectNodeByBridge.routerName}
+              value={data.name}
               className="max-w-lg bg-gray-200 block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 font-medium sm:max-w-xs sm:text-sm border-gray-300 rounded-md placeholder-gray-400 placeholder-opacity-60"
             />
           </div>
@@ -103,8 +104,8 @@ export default function FormAddInterface({
               <option disabled value="">
                 Pilih Interface
               </option>
-              {BRIDGE.listInterface.length > 0 &&
-                BRIDGE.listInterface.map((item, index) => (
+              {data.interfaceMember.length > 0 &&
+                data.interfaceMember.map((item, index) => (
                   <option key={index} value={item}>
                     {item}
                   </option>
@@ -117,13 +118,13 @@ export default function FormAddInterface({
       <div className="flex gap-4 sm:gap-4 sm:items-start mt-4">
         <span className="block text-sm font-medium text-gray-700 w-44"></span>
         <div className="mt-1 sm:mt-0 w-full">
-          {form.interface.length > 0 && (
+          {form?.interface?.length > 0 && (
             <button
               type="submit"
               disabled={loading}
               className="disabled:opacity-40 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
               {loading && <LoadingIcon />}
-              Associate Interface
+              Deassociate Interface
             </button>
           )}
         </div>

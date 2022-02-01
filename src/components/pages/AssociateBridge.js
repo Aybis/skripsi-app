@@ -1,15 +1,7 @@
-import {
-  ArrowLeftIcon,
-  MinusIcon,
-  PlusIcon,
-  PlusSmIcon,
-  ServerIcon,
-  TrashIcon,
-} from '@heroicons/react/outline';
-import { motion } from 'framer-motion';
+import { PlusSmIcon } from '@heroicons/react/outline';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import swal from 'sweetalert';
 import {
   deAssociatedNode,
@@ -17,50 +9,51 @@ import {
   fetchListNodeByBridgeDomain,
   setListSelectNodeByBridge,
 } from '../../store/actions/bridge';
-import {
-  FormAddInterface,
-  FormAssociatedNode,
-  LoadingIcon,
-  Modals,
-  TableBody,
-  TableContent,
-  TableHeading,
-} from '../atoms';
+import { Button, FormAddInterface, FormAssociatedNode, Modals } from '../atoms';
 import ModalDelete from '../atoms/ModalDelete';
 import Content from '../includes/Content';
 import Layout from '../includes/Layout';
+import {
+  FormDeleteInterface,
+  SectionBackMenu,
+  SectionTableAssociateBridge,
+} from '../molecules';
 
 export default function AssociateBridge() {
   const { id } = useParams();
-  const history = useHistory();
   const dispatch = useDispatch();
   const BRIDGE = useSelector((state) => state.bridge);
   const [isSubmit, setisSubmit] = useState(false);
   const [showAssociatedNode, setshowAssociatedNode] = useState(false);
-  const [showAssociateInterface, setshowAssociateInterface] = useState(false);
+  const [showModalInterface, setShowModalInterface] = useState(false);
   const [showDelete, setshowDelete] = useState(false);
-  const [dataDelete, setdataDelete] = useState({
-    id: '',
-    name: '',
-  });
-  console.log(BRIDGE);
+  const [selectData, setSelectData] = useState({});
 
-  const handlerAddInterfaceBridge = (data) => {
-    setshowAssociateInterface(true);
-    dispatch(setListSelectNodeByBridge(data));
-    dispatch(fetchListInterfaceNode(data.idRouterListModel));
-  };
+  const handlerShowModalForm = (event, data) => {
+    let nameType = event.target.name;
 
-  const handlerModalDelete = (data) => {
-    setshowDelete(true);
-    setdataDelete({
+    setSelectData({
       idBridgeDomain: id,
       idRouter: data.idRouterListModel,
       name: data.routerName,
+      type: event.target.name,
+      interfaceMember: data.interfaceMember,
     });
+
+    if (nameType === 'addInterface') {
+      setShowModalInterface(true);
+      dispatch(setListSelectNodeByBridge(data));
+      dispatch(fetchListInterfaceNode(data.idRouterListModel));
+    } else if (nameType === 'deleteInterface') {
+      setShowModalInterface(true);
+    } else if (nameType === 'deleteNode') {
+      setshowDelete(true);
+    } else {
+      return;
+    }
   };
 
-  const handlerDelete = async (data) => {
+  const handlerDeleteNode = async (data) => {
     setisSubmit(true);
     try {
       const result = await dispatch(
@@ -90,111 +83,21 @@ export default function AssociateBridge() {
   return (
     <Layout>
       <Content title={`Associated Node ${BRIDGE.selectBridge.bdName ?? ''}`}>
-        <motion.div
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={history.goBack}
-          className="z-10 cursor-pointer inline-flex gap-1 justify-center items-center text-gray-600 transition-all duration-300  group hover:text-gray-800">
-          <ArrowLeftIcon className="h-10 t p-2 bg-white rounded-md" />
-          <p className="text- font-semibold">Kembali</p>
-        </motion.div>
+        <SectionBackMenu />
 
-        <div className="mt-8">
-          <div className="px-4 md:px-10 py-4 md:py-7 bg-gray-100 rounded-tl-lg rounded-tr-lg">
-            <div className="sm:flex items-center justify-between">
-              <div className="flex gap-4 justify-center items-center">
-                <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-normal text-gray-800">
-                  List Data
-                </p>
-              </div>
-
-              <div>
-                <button
-                  onClick={() => setshowAssociatedNode(true)}
-                  className="inline-flex sm:ml-3 mt-4 sm:mt-0 items-center justify-center gap-2 px-6 py-3 bg-apps-primary hover:bg-blue-600 focus:outline-none rounded">
-                  <PlusSmIcon className="h-5 w-5 text-white" />
-                  <p className="text-sm font-medium leading-none text-white">
-                    Add New Associate Node
-                  </p>
-                </button>
-              </div>
-            </div>
+        <div className="mt-8 bg-white p-4 rounded-md">
+          <div className="relative mb-4">
+            <Button
+              type={'primary'}
+              handlerClick={() => setshowAssociatedNode(true)}>
+              <PlusSmIcon className="h-5 w-5 text-white" />
+              Add New Associate Node
+            </Button>
           </div>
           {/* Start Table */}
-
-          <TableHeading
-            theading={['No', 'Associated Node', 'Interface', 'Action']}>
-            {BRIDGE.loading ? (
-              <TableBody>
-                <TableContent colSpan={4} rowSpan={4}>
-                  <div className="flex justify-center items-center">
-                    <LoadingIcon
-                      color="text-apps-primary"
-                      height={8}
-                      width={8}
-                    />
-                  </div>
-                </TableContent>
-              </TableBody>
-            ) : BRIDGE.listNodeByBridge.length > 0 ? (
-              BRIDGE.listNodeByBridge.map((item, index) => (
-                <TableBody key={Math.random()}>
-                  <TableContent>{index + 1}</TableContent>
-                  <TableContent>
-                    <div className="flex items-center">
-                      <div className="w-10 h-10">
-                        <ServerIcon className="text-gray-500 h-8 w-8" />
-                      </div>
-                      <div className="pl-4">
-                        <p className="font-semibold text-gray-800 tracking-wide">
-                          {item.routerName}
-                        </p>
-                        <p className="text-xs leading-3 text-gray-400 pt-2">
-                          {item.bdName}
-                        </p>
-                      </div>
-                    </div>
-                  </TableContent>
-                  <TableContent>
-                    <p className="text-sm font-medium leading-none text-gray-800 text-center">
-                      {item.interfaceMember.length > 0
-                        ? item.interfaceMember.map((item) => `${item},  `)
-                        : 'Belum ada interface'}
-                    </p>
-                  </TableContent>
-                  <TableContent>
-                    <div className="flex flex-col gap-2 p-4">
-                      <button
-                        onClick={() => handlerModalDelete(item)}
-                        className="flex gap-1 items-center text-red-600 hover:text-red-900 font-medium">
-                        <TrashIcon className="h-4 w-4 " />
-                        Deassociate Node
-                      </button>
-
-                      <button
-                        onClick={() => handlerAddInterfaceBridge(item)}
-                        className="flex gap-1 items-center text-green-600 hover:text-green-700 font-medium">
-                        <PlusIcon className="h-4 w-4 " />
-                        Add Interface
-                      </button>
-                      <button className="flex gap-1 items-center text-red-600 hover:text-red-700 font-medium">
-                        <MinusIcon className="h-4 w-4 " />
-                        Interface
-                      </button>
-                    </div>
-                  </TableContent>
-                </TableBody>
-              ))
-            ) : (
-              <TableBody>
-                <TableContent colSpan={4} rowSpan={4}>
-                  <div className="flex justify-center items-center">
-                    <p>Belum Ada Node</p>
-                  </div>
-                </TableContent>
-              </TableBody>
-            )}
-          </TableHeading>
+          <SectionTableAssociateBridge
+            handlerShowModalForm={handlerShowModalForm}
+          />
 
           {/* End Table */}
         </div>
@@ -213,26 +116,37 @@ export default function AssociateBridge() {
         />
       </Modals>
 
-      {/* Modal Associate Node */}
+      {/* Modal Associate And Deassociate Interface */}
       <Modals
-        show={showAssociateInterface}
-        handlerShow={setshowAssociateInterface}
-        title={`Associated Interface with Bridge ${BRIDGE.selectBridge.bdName}`}
+        show={showModalInterface}
+        handlerShow={setShowModalInterface}
+        title={`${
+          selectData.type === 'addInterface' ? 'Associated' : 'Deassociated'
+        } Interface with Bridge ${BRIDGE.selectBridge.bdName}`}
         isLoading={isSubmit}>
-        <FormAddInterface
-          handlerModal={setshowAssociateInterface}
-          loading={isSubmit}
-          setLoading={setisSubmit}
-        />
+        {selectData.type === 'addInterface' ? (
+          <FormAddInterface
+            handlerModal={setShowModalInterface}
+            loading={isSubmit}
+            setLoading={setisSubmit}
+          />
+        ) : (
+          <FormDeleteInterface
+            handlerModal={setShowModalInterface}
+            loading={isSubmit}
+            data={selectData}
+            setLoading={setisSubmit}
+          />
+        )}
       </Modals>
 
       {/* Modal Deassociate  Node */}
       <ModalDelete
         isShow={showDelete}
         handlerClose={setshowDelete}
-        data={dataDelete}
+        data={selectData}
         isSubmit={isSubmit}
-        handlerDelete={handlerDelete}
+        handlerDelete={handlerDeleteNode}
       />
     </Layout>
   );

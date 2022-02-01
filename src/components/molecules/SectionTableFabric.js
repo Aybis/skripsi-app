@@ -4,13 +4,14 @@ import {
   ViewGridAddIcon,
 } from '@heroicons/react/outline';
 import { useSelector } from 'react-redux';
-import { Button, TableBody, TableContent, TableHeading } from '.';
-import LoadingIcon from './LoadingIcon';
-
-export default function Table({
-  title,
-  handlerOpenModal,
-  handlerDetailDataOSPFOrVXLAN,
+import {
+  Button,
+  LoadingIcon,
+  TableBody,
+  TableContent,
+  TableHeading,
+} from '../atoms';
+export default function SectionTableFabric({
   handlerViewVxlanById,
   handlerDelete,
 }) {
@@ -43,20 +44,18 @@ export default function Table({
                   </TableContent>
                   <TableContent>{item.tunnel}</TableContent>
                   <TableContent>
-                    <button
-                      onClick={() => handlerViewVxlanById(item)}
-                      className="flex gap-1 items-center text-blue-600 hover:text-blue-900 font-medium border-b border-blue-600 hover:border-blue-900 pb-1">
+                    <Button
+                      type="view"
+                      handlerClick={() => handlerViewVxlanById(item)}>
                       <ViewGridAddIcon className="h-4 w-4 " />
                       View Bridge Domain
-                    </button>
+                    </Button>
                   </TableContent>
                   <TableContent>
-                    <button
-                      onClick={() => alert('On Progress :)')}
-                      className="flex gap-1 items-center text-blue-600 hover:text-blue-900 font-medium border-b border-blue-600 hover:border-blue-900 pb-1">
+                    <Button type="view">
                       <ViewGridAddIcon className="h-4 w-4 " />
                       View iBGP
-                    </button>
+                    </Button>
                   </TableContent>
                   <TableContent>
                     <Button

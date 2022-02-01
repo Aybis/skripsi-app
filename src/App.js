@@ -1,4 +1,5 @@
 import { createBrowserHistory } from 'history';
+import jwt_decode from 'jwt-decode';
 import { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
@@ -6,14 +7,13 @@ import { Router, Switch } from 'react-router-dom';
 import Authenticated from './components/middleware/Authenticated';
 import Gate from './components/middleware/Gate';
 import AboutUs from './components/pages/AboutUs';
+import AssociateBridge from './components/pages/AssociateBridge';
+import Bridge from './components/pages/Bridge';
 import Fabric from './components/pages/Fabric';
 import Home from './components/pages/Home';
+import IBGP from './components/pages/IBGP';
 import Login from './components/pages/Login';
-import Ospf from './components/pages/Ospf';
-import Vxlan from './components/pages/Vxlan';
 import { setProfile } from './store/actions/user';
-import jwt_decode from 'jwt-decode';
-import AssociateBridge from './components/pages/AssociateBridge';
 
 function App() {
   // fungsi dari redux untuk memasukkan sebuah nilai ke dalam variable yang di set pada redux pada file /types/user.js
@@ -37,8 +37,8 @@ function App() {
         {/* Route After Middleware */}
         <Authenticated exact path="/" component={Home}></Authenticated>
         <Authenticated exact path="/fabric" component={Fabric}></Authenticated>
-        <Authenticated exact path="/ibgp" component={Ospf}></Authenticated>
-        <Authenticated exact path="/bridge" component={Vxlan}></Authenticated>
+        <Authenticated exact path="/ibgp" component={IBGP}></Authenticated>
+        <Authenticated exact path="/bridge" component={Bridge}></Authenticated>
         <Authenticated
           exact
           path="/bridge/associate/:id"
