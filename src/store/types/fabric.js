@@ -5,6 +5,7 @@ export const BRIDGE_NAME = 'BRIDGE_NAME';
 export const LIST_BRIDGE = 'LIST_BRIDGE';
 export const IBGP_NAME = 'IBGP_NAME';
 export const LIST_IBGP = 'LIST_IBGP';
+export const DETAIL_TUNNEL = 'DETAIL_TUNNEL';
 export const STATUS_DATA = 'STATUS_DATA';
 export const MESSAGE_DATA = 'MESSAGE_DATA';
 export const TUNNEL = 'TUNNEL';

@@ -12,8 +12,9 @@ import {
   TableHeading,
 } from '../atoms';
 export default function SectionTableFabric({
-  handlerViewVxlanById,
+  handlerViewListBridge,
   handlerDelete,
+  handlerViewListIBGP,
 }) {
   const FABRIC = useSelector((state) => state.fabric);
 
@@ -46,13 +47,15 @@ export default function SectionTableFabric({
                   <TableContent>
                     <Button
                       type="view"
-                      handlerClick={() => handlerViewVxlanById(item)}>
+                      handlerClick={() => handlerViewListBridge(item)}>
                       <ViewGridAddIcon className="h-4 w-4 " />
                       View Bridge Domain
                     </Button>
                   </TableContent>
                   <TableContent>
-                    <Button type="view">
+                    <Button
+                      type="view"
+                      handlerClick={() => handlerViewListIBGP(item)}>
                       <ViewGridAddIcon className="h-4 w-4 " />
                       View iBGP
                     </Button>

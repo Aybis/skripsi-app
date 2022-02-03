@@ -8,6 +8,7 @@ const initialState = {
   nameBridge: '',
   listIbgp: {},
   nameIbgp: '',
+  detailTunnel: {},
   tunnel: false,
   status: 'idle',
   total: 0,
@@ -31,6 +32,13 @@ export default function (state = initialState, action) {
       return {
         ...state,
         dataVxlanByFabric: action.payload ?? {},
+        status: 'ok',
+      };
+
+    case type.DETAIL_TUNNEL:
+      return {
+        ...state,
+        detailTunnel: action.payload ?? {},
         status: 'ok',
       };
 

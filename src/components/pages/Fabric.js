@@ -6,6 +6,7 @@ import vmat from '../../config/api/vmat';
 import { setTokenHeader } from '../../config/axios';
 import {
   checkUnderlay,
+  fetchLisIbgp,
   fetchListBridge,
   fetchListNodes,
   fetchNode,
@@ -17,7 +18,7 @@ import LoadingIcon from '../atoms/LoadingIcon';
 import ModalDelete from '../atoms/ModalDelete';
 import Content from '../includes/Content';
 import Layout from '../includes/Layout';
-import { SectionTableFabric, TableBridge } from '../molecules';
+import { SectionTableFabric, TableBridge, TableIbgp } from '../molecules';
 
 export default function Fabric() {
   const FABRIC = useSelector((state) => state.fabric);
@@ -109,9 +110,14 @@ export default function Fabric() {
     });
   };
 
-  const handlerGetListVxlanById = (data) => {
+  const handlerViewListBridge = (data) => {
     setmodalListBridge(true);
     dispatch(fetchListBridge(data));
+  };
+
+  const handlerViewListIBGP = (data) => {
+    setmodalListIbgp(true);
+    dispatch(fetchLisIbgp(data));
   };
 
   const handlerAddFabric = () => {
@@ -168,7 +174,7 @@ export default function Fabric() {
           title={FABRIC.nameBridge}
           handlerShow={setmodalListIbgp}
           show={modalListIbgp}>
-          <TableBridge />
+          <TableIbgp />
         </Modals>
 
         <ModalDelete
@@ -199,7 +205,8 @@ export default function Fabric() {
           {FABRIC.tunnel ? (
             <SectionTableFabric
               handlerOpenModal={() => handlerAddFabric()}
-              handlerViewVxlanById={handlerGetListVxlanById}
+              handlerViewListBridge={handlerViewListBridge}
+              handlerViewListIBGP={handlerViewListIBGP}
               handlerDelete={handlerModalDelete}
             />
           ) : FABRIC.message === 'loading' ? (

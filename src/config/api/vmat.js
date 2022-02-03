@@ -8,12 +8,13 @@ export default {
   // fabric end point
   setUnderlay: (data) => axios.post('inventory/setupunderlay', data),
   checkUndelay: () => axios.get('inventory/check-underlay'),
-  getUnderlay: () => axios.get('inventory/info-underlay'),
+  detailUnderlay: () => axios.get('inventory/info-underlay'),
   getNodes: () => axios.get('inventory/router'),
   addNode: (data) => axios.post('inventory/', data),
   deleteNodes: (data) => axios.post('inventory/load-init', data),
   fetchListBridgeByFabric: (idNode) =>
     axios.get(`configure/member-vxlan-of-nodes/${idNode}`),
+  fetchListIBGPByFabric: (id) => axios.get(`/configure/ibgp-list/${id}`),
   getInterfaceNode: (data) => axios.get(`inventory/router/${data}`),
 
   // bridge domain end point

@@ -6,8 +6,7 @@ export default function TableIbgp() {
   const FABRIC = useSelector((state) => state.fabric);
 
   return (
-    <TableHeading
-      theading={['No', 'Bridge domain name', 'vni id', 'interface']}>
+    <TableHeading theading={['No', 'Router', 'IP Address', 'Interface']}>
       {FABRIC.loading ? (
         <TableBody key={Math.random()}>
           <TableContent
@@ -17,13 +16,13 @@ export default function TableIbgp() {
             <LoadingIcon height={6} width={6} color="text-blue-600" />
           </TableContent>
         </TableBody>
-      ) : FABRIC.listBridge.length > 0 ? (
-        FABRIC.listBridge.map((item, index) => (
+      ) : FABRIC.listIbgp.length > 0 ? (
+        FABRIC.listIbgp.map((item, index) => (
           <TableBody key={Math.random()}>
-            <TableContent data={index + 1} />
-            <TableContent data={index + 1} />
-            <TableContent data={index + 1} />
-            <TableContent data={index + 1} />
+            <TableContent> {index + 1}</TableContent>
+            <TableContent> {item.routerName}</TableContent>
+            <TableContent> {item.ipAddress}</TableContent>
+            <TableContent> {item.interface}</TableContent>
           </TableBody>
         ))
       ) : (

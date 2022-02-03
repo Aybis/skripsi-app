@@ -18,6 +18,11 @@ export const fetchOspfByFabric = (data) => ({
   payload: data,
 });
 
+export const setDetailTunnel = (data) => ({
+  type: type.DETAIL_TUNNEL,
+  payload: data,
+});
+
 export const setBridgeName = (data) => ({
   type: type.BRIDGE_NAME,
   payload: data,
@@ -62,14 +67,20 @@ export const setError = (data) => ({
 });
 
 export const checkUnderlay = () => async (dispatch) => {
+  dispatch(setLoading(true));
+
   dispatch(setTunnel(false));
   setTokenHeader();
   return await vmat
     .checkUndelay()
     .then((response) => {
+      dispatch(setLoading(false));
       dispatch(setTunnel(response.data.success ? false : true));
+      return response;
     })
     .catch((err) => {
+      dispatch(setLoading(false));
+
       return err;
     });
 };
@@ -107,5 +118,39 @@ export const fetchListBridge = (data) => async (dispatch) => {
       dispatch(setLoading(false));
 
       ToastHandler('err', err?.response?.message ?? 'Something happened');
+    });
+};
+
+export const viewDetailUnderlay = () => async (dispatch) => {
+  dispatch(setLoading(true));
+  setTokenHeader();
+
+  return await vmat
+    .detailUnderlay()
+    .then((res) => {
+      dispatch(setDetailTunnel(res.data.message));
+      dispatch(setLoading(false));
+      return res;
+    })
+    .catch((err) => {
+      dispatch(setLoading(false));
+      return err;
+    });
+};
+
+export const fetchLisIbgp = (data) => async (dispatch) => {
+  setTokenHeader();
+  dispatch(setBridgeName(data.routerName));
+  dispatch(setLoading(true));
+  return await vmat
+    .fetchListIBGPByFabric(data._id)
+    .then((res) => {
+      dispatch(setLoading(false));
+      dispatch(setListIbgp(res.data.message));
+      return res;
+    })
+    .catch((err) => {
+      dispatch(setLoading(false));
+      return err;
     });
 };

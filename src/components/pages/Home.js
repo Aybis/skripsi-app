@@ -1,51 +1,21 @@
 import { ServerIcon } from '@heroicons/react/outline';
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import vmat from '../../config/api/vmat';
-import { setTokenHeader } from '../../config/axios';
-import ToastHandler from '../../helpers/toast';
-import { fetchListNodes, messageData } from '../../store/actions/fabric';
+import { fetchNode, viewDetailUnderlay } from '../../store/actions/fabric';
 import Content from '../includes/Content';
 import Layout from '../includes/Layout';
 
 export default function Home() {
-  const [underlay, setunderlay] = useState(null);
   const USER = useSelector((state) => state.user);
   const FABRIC = useSelector((state) => state.fabric);
   const dispatch = useDispatch();
 
-  const handlerGetListNode = () => {
-    setTokenHeader();
-
-    vmat
-      .getNodes()
-      .then((response) => {
-        dispatch(fetchListNodes(response.data.message));
-        dispatch(messageData('ok'));
-      })
-      .catch((err) => {
-        dispatch(messageData('error'));
-
-        ToastHandler(
-          'error',
-          err.response.data.message ?? 'Something happenned',
-        );
-      });
-
-    vmat
-      .getUnderlay()
-      .then((response) => {
-        setunderlay(response.data.message);
-      })
-      .catch((err) => {
-        setunderlay(null);
-      });
-  };
   useEffect(() => {
-    handlerGetListNode();
+    dispatch(fetchNode());
+    dispatch(viewDetailUnderlay());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [USER]);
+  }, [dispatch, USER]);
 
   return (
     <Layout>
@@ -56,14 +26,16 @@ export default function Home() {
               <span className="text-xl font-light text-warmGray-600">
                 IP Tunnel :{' '}
               </span>
-              <h1 className="text-xl font-bold text-warmGray-800 "> </h1>
+              <h1 className="text-xl font-bold text-warmGray-800 ">
+                {FABRIC?.detailTunnel?.ip_tunnel_block ?? ''}
+              </h1>
             </div>
             <div className="inline-flex gap-2">
               <span className="text-xl font-light text-warmGray-600">
                 Underlay Digunakan :{' '}
               </span>
               <h1 className="text-xl font-bold text-warmGray-800 ">
-                {underlay ? underlay?.underlay_used : ''}
+                {FABRIC?.detailTunnel?.underlay_used ?? ''}
               </h1>
             </div>
             <div className="inline-flex gap-2">
@@ -71,7 +43,7 @@ export default function Home() {
                 Underlay Tersedia :{' '}
               </span>
               <h1 className="text-xl font-bold text-warmGray-800 ">
-                {underlay ? underlay?.underlay_available : ''}
+                {FABRIC?.detailTunnel?.underlay_available ?? ''}
               </h1>
             </div>
           </div>
@@ -86,7 +58,7 @@ export default function Home() {
                 <motion.div
                   whileTap={{ scale: 0.75 }}
                   key={item._id}
-                  className="bg-white border-2 border-warmGray-200 border-opacity-70 rounded-lg p-4 group hover:shadow-lg transition-all duration-300 ease-in-out cursor-pointer">
+                  className="bg-white shadow-md rounded-lg p-4 group hover:shadow-lg transition-all duration-300 ease-in-out cursor-pointer">
                   <div className="flex flex-row-reverse justify-between px-2">
                     <span className="flex items-center justify-center h-12 w-12 rounded-md bg-warmGray-300 bg-opacity-10">
                       <ServerIcon
