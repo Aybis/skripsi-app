@@ -3,15 +3,12 @@ import { BellIcon, MenuAlt2Icon } from '@heroicons/react/outline';
 import { Fragment } from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import swal from 'sweetalert';
 import { imageApi } from '../../helpers/Asset';
 import { convertDate } from '../../helpers/convertDate';
 import ToastHandler from '../../helpers/toast';
 
-const userNavigation = [
-  { name: 'Your Profile', href: 'profile' },
-  { name: 'Settings', href: 'setting' },
-  { name: 'Sign out', href: 'logout' },
-];
+const userNavigation = [{ name: 'Sign out', href: 'logout' }];
 
 const handlerLogOut = (val) => {
   if (val === 'logout') {
@@ -24,6 +21,7 @@ const handlerLogOut = (val) => {
     // remove token
     localStorage.clear();
     ToastHandler('success', 'Logout Berhasil');
+    swal('Yeay', 'Anda Berhasil Logout!', 'success');
 
     // redirect link
     <Redirect push to="/login" />;

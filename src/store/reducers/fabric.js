@@ -38,8 +38,7 @@ export default function (state = initialState, action) {
     case type.DETAIL_TUNNEL:
       return {
         ...state,
-        detailTunnel: action.payload ?? {},
-        status: 'ok',
+        detailTunnel: action.payload,
       };
 
     case type.LIST_OSPF_BY_FABRIC:

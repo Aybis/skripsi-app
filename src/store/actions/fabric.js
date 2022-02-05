@@ -88,18 +88,15 @@ export const checkUnderlay = () => async (dispatch) => {
 export const fetchNode = () => async (dispatch) => {
   setTokenHeader();
 
-  await vmat
+  return await vmat
     .getNodes()
     .then((response) => {
       dispatch(fetchListNodes(response.data.message));
       dispatch(messageData('ok'));
+      return response;
     })
     .catch((err) => {
-      dispatch(messageData('error'));
-      ToastHandler(
-        'error',
-        err?.response?.data?.message ?? 'Something happenned',
-      );
+      return err;
     });
 };
 
@@ -121,23 +118,6 @@ export const fetchListBridge = (data) => async (dispatch) => {
     });
 };
 
-export const viewDetailUnderlay = () => async (dispatch) => {
-  dispatch(setLoading(true));
-  setTokenHeader();
-
-  return await vmat
-    .detailUnderlay()
-    .then((res) => {
-      dispatch(setDetailTunnel(res.data.message));
-      dispatch(setLoading(false));
-      return res;
-    })
-    .catch((err) => {
-      dispatch(setLoading(false));
-      return err;
-    });
-};
-
 export const fetchLisIbgp = (data) => async (dispatch) => {
   setTokenHeader();
   dispatch(setBridgeName(data.routerName));
@@ -151,6 +131,24 @@ export const fetchLisIbgp = (data) => async (dispatch) => {
     })
     .catch((err) => {
       dispatch(setLoading(false));
+      return err;
+    });
+};
+
+export const fetchDataDetailTunnelActive = (data) => async (dispatch) => {
+  setTokenHeader();
+  dispatch(setLoading(true));
+
+  await vmat
+    .detailUnderlay()
+    .then((res) => {
+      dispatch(setLoading(false));
+      dispatch(setDetailTunnel(res.data.message));
+      return res;
+    })
+    .catch((err) => {
+      dispatch(setLoading(false));
+
       return err;
     });
 };

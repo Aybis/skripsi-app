@@ -1,21 +1,34 @@
 import { ServerIcon } from '@heroicons/react/outline';
 import { motion } from 'framer-motion';
-import { useEffect } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchNode, viewDetailUnderlay } from '../../store/actions/fabric';
+import {
+  fetchDataDetailTunnelActive,
+  fetchNode,
+} from '../../store/actions/fabric';
+import { LoadingIcon } from '../atoms';
 import Content from '../includes/Content';
 import Layout from '../includes/Layout';
 
 export default function Home() {
-  const USER = useSelector((state) => state.user);
   const FABRIC = useSelector((state) => state.fabric);
+  const [didMount, setDidMount] = useState(false);
+
   const dispatch = useDispatch();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     dispatch(fetchNode());
-    dispatch(viewDetailUnderlay());
+    dispatch(fetchDataDetailTunnelActive());
+    setDidMount(true);
+    return () => {
+      setDidMount(false);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, USER]);
+  }, [dispatch]);
+
+  if (!didMount) {
+    return null;
+  }
 
   return (
     <Layout>
@@ -27,7 +40,9 @@ export default function Home() {
                 IP Tunnel :{' '}
               </span>
               <h1 className="text-xl font-bold text-warmGray-800 ">
-                {FABRIC?.detailTunnel?.ip_tunnel_block ?? ''}
+                {FABRIC.loading
+                  ? 'Loading ....'
+                  : FABRIC?.detailTunnel?.ip_tunnel_block ?? ''}
               </h1>
             </div>
             <div className="inline-flex gap-2">
@@ -35,7 +50,9 @@ export default function Home() {
                 Underlay Digunakan :{' '}
               </span>
               <h1 className="text-xl font-bold text-warmGray-800 ">
-                {FABRIC?.detailTunnel?.underlay_used ?? ''}
+                {!FABRIC.loading
+                  ? FABRIC?.detailTunnel?.underlay_used ?? ''
+                  : 'Loading ....'}
               </h1>
             </div>
             <div className="inline-flex gap-2">
@@ -43,7 +60,9 @@ export default function Home() {
                 Underlay Tersedia :{' '}
               </span>
               <h1 className="text-xl font-bold text-warmGray-800 ">
-                {FABRIC?.detailTunnel?.underlay_available ?? ''}
+                {!FABRIC.loading
+                  ? FABRIC?.detailTunnel?.underlay_available ?? ''
+                  : 'Loading ....'}
               </h1>
             </div>
           </div>
@@ -53,7 +72,11 @@ export default function Home() {
             List Nodes
           </h1>
           <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-x-8 lg:gap-y-16">
-            {FABRIC.dataNodes.length > 0 ? (
+            {FABRIC.loading ? (
+              <div className="flex relative justify-center items-center w-full col-span-4">
+                <LoadingIcon color="text-blue-500" height={7} width={7} />
+              </div>
+            ) : FABRIC.dataNodes.length > 0 ? (
               FABRIC.dataNodes.map((item) => (
                 <motion.div
                   whileTap={{ scale: 0.75 }}
