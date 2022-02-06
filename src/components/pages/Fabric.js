@@ -1,4 +1,4 @@
-import { CloudIcon, PlusSmIcon } from '@heroicons/react/solid';
+import { CloudIcon, PlusSmIcon, RefreshIcon } from '@heroicons/react/solid';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import swal from 'sweetalert';
@@ -10,6 +10,7 @@ import {
   fetchListBridge,
   fetchListNodes,
   fetchNode,
+  fetchResetUnderlayTunnel,
   messageData,
   setTunnel,
 } from '../../store/actions/fabric';
@@ -28,6 +29,7 @@ export default function Fabric() {
   const [modalListBridge, setmodalListBridge] = useState(false);
   const [modalListIbgp, setmodalListIbgp] = useState(false);
   const [showModalDelete, setshowModalDelete] = useState(false);
+  const [modalResetUnderlay, setmodalResetUnderlay] = useState(false);
   const [loadingDelete, setloadingDelete] = useState(false);
   const [didMount, setDidMount] = useState(false);
   const [dataDelete, setdataDelete] = useState({
@@ -105,8 +107,8 @@ export default function Fabric() {
   const handlerModalDelete = (data) => {
     setshowModalDelete(true);
     setdataDelete({
-      id: data._id,
-      name: data.routerName,
+      id: data._id ?? '',
+      name: data.routerName ?? 'Reset Underlay',
     });
   };
 
@@ -123,6 +125,18 @@ export default function Fabric() {
   const handlerAddFabric = () => {
     setmodalAddFabric(true);
     // settitleModalAdd('Associate Node to Fabric');
+  };
+
+  const handlerResetTunnel = async () => {
+    setloadingDelete(true);
+    try {
+      await dispatch(fetchResetUnderlayTunnel());
+      setloadingDelete(false);
+    } catch (error) {
+      setloadingDelete(false);
+      setmodalResetUnderlay(false);
+    }
+    setmodalResetUnderlay(false);
   };
 
   useEffect(() => {
@@ -177,6 +191,17 @@ export default function Fabric() {
           <TableIbgp />
         </Modals>
 
+        {/* Modal Reset Tunnel */}
+        <ModalDelete
+          isShow={modalResetUnderlay}
+          handlerClose={setmodalResetUnderlay}
+          data={{
+            name: 'Reset Underlay',
+          }}
+          isSubmit={loadingDelete}
+          handlerDelete={handlerResetTunnel}
+        />
+
         <ModalDelete
           isShow={showModalDelete}
           handlerClose={setshowModalDelete}
@@ -194,11 +219,23 @@ export default function Fabric() {
                 <CloudIcon className="h-5" />
                 Deploy Tunnel
               </Button>
+            ) : FABRIC.loading ? (
+              ''
             ) : (
-              <Button handlerClick={handlerAddFabric}>
-                <PlusSmIcon className="h-5 w-5 text-white" />
-                Add Node to Fabric
-              </Button>
+              <>
+                <Button handlerClick={handlerAddFabric}>
+                  <PlusSmIcon className="h-5 w-5 text-white" />
+                  Add Node to Fabric
+                </Button>
+
+                <Button
+                  handlerClick={() => setmodalResetUnderlay(true)}
+                  type="danger"
+                  addClass={'gap-2'}>
+                  <RefreshIcon className="h-5 " />
+                  Reset Underlay
+                </Button>
+              </>
             )}
           </div>
 
@@ -208,10 +245,11 @@ export default function Fabric() {
               handlerViewListBridge={handlerViewListBridge}
               handlerViewListIBGP={handlerViewListIBGP}
               handlerDelete={handlerModalDelete}
+              handlerResetTunnel={setmodalResetUnderlay}
             />
           ) : FABRIC.message === 'loading' ? (
             <div className="flex justify-center items-center px-4 py-2">
-              <LoadingIcon color="text-apps-primary" height={8} width={8} />
+              <LoadingIcon color="text-apps-primary" />
             </div>
           ) : (
             <div className="flex justify-center items-center px-4 py-2">

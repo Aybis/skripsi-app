@@ -8,6 +8,7 @@ export default {
   // fabric end point
   setUnderlay: (data) => axios.post('inventory/setupunderlay', data),
   checkUndelay: () => axios.get('inventory/check-underlay'),
+  resetUnderlay: () => axios.post('inventory/resetunderlay'),
   detailUnderlay: () => axios.get('inventory/info-underlay'),
   getNodes: () => axios.get('inventory/router'),
   addNode: (data) => axios.post('inventory/', data),

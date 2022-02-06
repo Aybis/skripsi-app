@@ -15,6 +15,7 @@ export default function SectionTableFabric({
   handlerViewListBridge,
   handlerDelete,
   handlerViewListIBGP,
+  handlerResetTunnel,
 }) {
   const FABRIC = useSelector((state) => state.fabric);
 
@@ -73,11 +74,17 @@ export default function SectionTableFabric({
             ) : (
               <TableBody>
                 <TableContent colSpan={6} rowSpan={6}>
-                  <span className="flex gap-2 w-full items-center justify-center">
-                    {FABRIC.message === 'loading' && (
-                      <LoadingIcon color="text-apps-primary ml-2" />
-                    )}
-                    Data Kosong
+                  <span className="flex flex-col gap-2 w-full items-center justify-center">
+                    <span>
+                      {FABRIC.message === 'loading' && (
+                        <LoadingIcon color="text-apps-primary ml-2" />
+                      )}
+                      <p>Belum ada Node terdaftar!</p>
+                    </span>
+                    <p>
+                      Anda dapat menambahkan node baru atau melakukan reset
+                      underlay
+                    </p>
                   </span>
                 </TableContent>
               </TableBody>

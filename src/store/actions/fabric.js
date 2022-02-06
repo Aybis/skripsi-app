@@ -1,3 +1,4 @@
+import swal from 'sweetalert';
 import vmat from '../../config/api/vmat';
 import { setTokenHeader } from '../../config/axios';
 import ToastHandler from '../../helpers/toast';
@@ -149,6 +150,36 @@ export const fetchDataDetailTunnelActive = (data) => async (dispatch) => {
     .catch((err) => {
       dispatch(setLoading(false));
 
+      return err;
+    });
+};
+
+export const fetchResetUnderlayTunnel = () => async (dispatch) => {
+  setTokenHeader();
+  dispatch(setLoading(true));
+  dispatch(messageData('loading'));
+
+  return await vmat
+    .resetUnderlay()
+    .then((res) => {
+      dispatch(setLoading(false));
+      dispatch(messageData('ok'));
+      dispatch(checkUnderlay());
+      swal(
+        'Yeay!',
+        res.data.message ?? 'Reset Underlay Successfull!',
+        'success',
+      );
+      return res;
+    })
+    .catch((err) => {
+      dispatch(setLoading(false));
+      dispatch(messageData('ok'));
+      swal(
+        'Oh No!',
+        err.response.data.message ?? 'Something Happened!',
+        'error',
+      );
       return err;
     });
 };

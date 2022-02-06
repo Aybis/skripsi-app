@@ -5,7 +5,7 @@ import swal from 'sweetalert';
 import { Modals } from '.';
 import vmat from '../../config/api/vmat';
 import { setTokenHeader } from '../../config/axios';
-import { fetchNode } from '../../store/actions/fabric';
+import { fetchNode, messageData } from '../../store/actions/fabric';
 import LoadingIcon from './LoadingIcon';
 
 export default function FormAddFabric({ show, handlerShow, title }) {
@@ -14,8 +14,6 @@ export default function FormAddFabric({ show, handlerShow, title }) {
   const [isShowPassword, setisShowPassword] = useState(false);
   // var untuk ganti type form password menjadi text dan sebaliknya
   const [isPassword, setisPassword] = useState('password');
-
-  const [isCapsclok, setisCapsclok] = useState(false);
   const [isSubmit, setisSubmit] = useState(false);
 
   const [form, setForm] = useState({
@@ -25,23 +23,11 @@ export default function FormAddFabric({ show, handlerShow, title }) {
     routerPassword: '',
     role: '',
     keyApi: 'binus2021',
-    nhrpSecret: '',
+    nhrpSecret: '12345',
     bgp: {},
     localAs: '',
     remoteAs: '',
   });
-
-  /**
-   * Detect caps lock being on when typing.
-   * @param keyEvent On key down event.
-   */
-  const onKeyDown = (keyEvent) => {
-    if (keyEvent.getModifierState('CapsLock')) {
-      setisCapsclok(true);
-    } else {
-      setisCapsclok(false);
-    }
-  };
 
   const handlerOnChange = (event) => {
     setForm({
@@ -65,8 +51,8 @@ export default function FormAddFabric({ show, handlerShow, title }) {
     event.preventDefault();
 
     form.bgp = {
-      localAs: form.localAs,
-      remoteAs: form.remoteAs,
+      localAs: 65010,
+      remoteAs: 65010,
     };
 
     delete form.localAs;
@@ -81,6 +67,8 @@ export default function FormAddFabric({ show, handlerShow, title }) {
           title: response.data.message ?? 'Node Successfully Added',
           icon: 'success',
         });
+        dispatch(messageData('loading'));
+
         dispatch(fetchNode());
         handlerShow(false);
         // reset value input tu string
@@ -89,8 +77,6 @@ export default function FormAddFabric({ show, handlerShow, title }) {
         form.routerUsername = '';
         form.routerPassword = '';
         form.role = '';
-        form.nhrpSecret = '';
-        form.bgp = {};
       })
       .catch((err) => {
         setisSubmit(false);
@@ -125,6 +111,10 @@ export default function FormAddFabric({ show, handlerShow, title }) {
                 placeholder="JKT-SPOKE"
                 className="max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 font-medium sm:max-w-xs sm:text-sm border-gray-300 rounded-md placeholder-gray-400 placeholder-opacity-60"
               />
+              <p className="text-xs text-gray-500 mt-1">
+                Penamaan diharapkan menggunakan nama dari role yang dipilih
+                NODE-SPOKE.
+              </p>
             </div>
           </div>
 
@@ -144,6 +134,9 @@ export default function FormAddFabric({ show, handlerShow, title }) {
                 placeholder="220.110.134.1/24"
                 className="placeholder-gray-400 placeholder-opacity-60 max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"
               />
+              <p className="text-xs text-gray-500 mt-1">
+                IP yang diinput tidak boleh sama dengan Node yang lain.
+              </p>
             </div>
           </div>
 
@@ -159,6 +152,7 @@ export default function FormAddFabric({ show, handlerShow, title }) {
                 value={form.routerUsername}
                 onChange={handlerOnChange}
                 required
+                autoComplete="off"
                 type="text"
                 placeholder="vyos"
                 className="placeholder-gray-400 placeholder-opacity-60 block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"
@@ -182,9 +176,6 @@ export default function FormAddFabric({ show, handlerShow, title }) {
                 placeholder="*******"
                 className="placeholder-gray-400 placeholder-opacity-60 block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"
               />
-              <span className="text-xs font-medium text-gray-400">
-                {isCapsclok && 'Your Capslock is ON!'}
-              </span>
               <div
                 className="absolute right-20 -mt-7 cursor-pointer"
                 onClick={handlerClick}>
@@ -215,78 +206,9 @@ export default function FormAddFabric({ show, handlerShow, title }) {
                 <option value="hub">HUB</option>
                 <option value="spoke">SPOKE</option>
               </select>
-            </div>
-          </div>
-
-          <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-            <label
-              htmlFor="nhrp-secret"
-              className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-              NHRP Secret
-            </label>
-            <div className="mt-1 sm:mt-0 sm:col-span-2">
-              <input
-                type={isPassword}
-                name="nhrpSecret"
-                value={form.nhrpSecret}
-                required
-                onChange={handlerOnChange}
-                onKeyDown={onKeyDown}
-                placeholder="******"
-                className="placeholder-gray-400 placeholder-opacity-60 block max-w-lg w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"
-              />
-              <span className="text-xs font-medium text-gray-400">
-                {isCapsclok && 'Your Capslock is ON!'}
-              </span>
-              <div
-                className="absolute right-20 -mt-7 cursor-pointer"
-                onClick={handlerClick}>
-                {isShowPassword ? (
-                  <EyeIcon className="h-4 w-4 text-warmGray-600" />
-                ) : (
-                  <EyeOffIcon className="h-4 w-4 text-warmGray-600" />
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-            <label
-              htmlFor="bgp-local"
-              className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-              BGP Local-AS
-            </label>
-            <div className="mt-1 sm:mt-0 sm:col-span-2">
-              <input
-                type="text"
-                name="localAs"
-                value={form.localAs || ''}
-                onChange={handlerOnChange}
-                placeholder="65010"
-                autoComplete="true"
-                required
-                className="placeholder-gray-400 placeholder-opacity-60 max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"
-              />
-            </div>
-          </div>
-
-          <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
-            <label
-              htmlFor="bgp-remote"
-              className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
-              BGP Remote-AS
-            </label>
-            <div className="mt-1 sm:mt-0 sm:col-span-2">
-              <input
-                type="text"
-                value={form.remoteAs || ''}
-                name="remoteAs"
-                onChange={handlerOnChange}
-                placeholder="65010"
-                required
-                autoComplete="true"
-                className="placeholder-gray-400 placeholder-opacity-60 max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"
-              />
+              <p className="text-xs text-gray-500 mt-1">
+                Pilih Role dengan nilai HUB untuk pertama kali menambahkan node!
+              </p>
             </div>
           </div>
 

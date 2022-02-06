@@ -36,30 +36,60 @@ export default function Home() {
         <div className="relative mt-8 ">
           <div className="flex flex-col gap-1">
             <div className="inline-flex gap-2">
-              <span className="text-xl font-light text-warmGray-600">
-                IP Tunnel :{' '}
+              <span className="text-xl font-light text-warmGray-600 w-48">
+                IP Tunnel
               </span>
-              <h1 className="text-xl font-bold text-warmGray-800 ">
+              <h1
+                className={[
+                  'text-xl ',
+                  FABRIC?.loading
+                    ? 'text-gray-500 font-normal'
+                    : FABRIC?.detailTunnel?.ip_tunnel_block ===
+                      'please deploy underlay first'
+                    ? 'text-red-500 font-medium'
+                    : 'font-bold text-warmGray-800',
+                ].join(' ')}>
+                :{' '}
                 {FABRIC.loading
                   ? 'Loading ....'
                   : FABRIC?.detailTunnel?.ip_tunnel_block ?? ''}
               </h1>
             </div>
             <div className="inline-flex gap-2">
-              <span className="text-xl font-light text-warmGray-600">
-                Underlay Digunakan :{' '}
+              <span className="text-xl font-light text-warmGray-600 w-48">
+                Underlay Digunakan
               </span>
-              <h1 className="text-xl font-bold text-warmGray-800 ">
+              <h1
+                className={[
+                  'text-xl ',
+                  FABRIC?.loading
+                    ? 'text-gray-500 font-normal'
+                    : FABRIC?.detailTunnel?.underlay_used ===
+                      'please deploy underlay first'
+                    ? 'text-red-500 font-medium'
+                    : 'font-bold text-warmGray-800',
+                ].join(' ')}>
+                :{' '}
                 {!FABRIC.loading
                   ? FABRIC?.detailTunnel?.underlay_used ?? ''
                   : 'Loading ....'}
               </h1>
             </div>
             <div className="inline-flex gap-2">
-              <span className="text-xl font-light text-warmGray-600">
-                Underlay Tersedia :{' '}
+              <span className="text-xl font-light text-warmGray-600 w-48">
+                Underlay Tersedia
               </span>
-              <h1 className="text-xl font-bold text-warmGray-800 ">
+              <h1
+                className={[
+                  'text-xl ',
+                  FABRIC?.loading
+                    ? 'text-gray-500 font-normal'
+                    : FABRIC?.detailTunnel?.underlay_available ===
+                      'please deploy underlay first'
+                    ? 'text-red-500 font-medium'
+                    : 'font-bold text-warmGray-800',
+                ].join(' ')}>
+                :{' '}
                 {!FABRIC.loading
                   ? FABRIC?.detailTunnel?.underlay_available ?? ''
                   : 'Loading ....'}
@@ -120,7 +150,11 @@ export default function Home() {
                 </motion.div>
               ))
             ) : (
-              <p>Data Kosong</p>
+              <div className="relative flex justify-center items-center p-4 col-span-4">
+                <p className="text-xl font-medium text-gray-800">
+                  Belum Ada Node Ditambahkan!
+                </p>
+              </div>
             )}
           </div>
         </div>
