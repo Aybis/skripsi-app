@@ -102,7 +102,7 @@ export default function Home() {
                   <div className="grid grid-cols-2 gap-2 mt-6 px-2">
                     <div className="flex flex-col gap-1">
                       <span className="text-sm font-medium text-warmGray-500">
-                        VXLAN
+                        BRIDGE
                       </span>
                       <span className="font-semibold text-lg text-warmGray-800">
                         {item.interfaceList.length}
@@ -110,7 +110,7 @@ export default function Home() {
                     </div>
                     <div className="flex flex-col gap-1">
                       <span className="text-sm font-medium text-warmGray-500">
-                        OSPF
+                        iBGP
                       </span>
                       <span className="font-semibold text-lg text-warmGray-800">
                         {item.interfaceList.length}

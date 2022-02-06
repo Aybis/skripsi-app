@@ -43,7 +43,7 @@ export default function SectionTableBridge({
             'Bridge domain',
             'bridge id',
             'vni',
-            'Node',
+            'Associate Node',
             'Action',
           ]}>
           {BRIDGE.loading ? (
@@ -74,16 +74,15 @@ export default function SectionTableBridge({
                   <TableContent>{item._id}</TableContent>
                   <TableContent>{item.vniId}</TableContent>
                   <TableContent>
-                    <Button
-                      type="view"
-                      handlerClick={() => handlerBridgeDetail(item)}>
+                    <Button handlerClick={() => handlerBridgeDetail(item)}>
                       <CogIcon className="h-4" />
-                      Manage Node
+                      Manage Associate Node
                     </Button>
                   </TableContent>
                   <TableContent>
                     <div className="flex  gap-2">
                       <Button
+                        addClass={'hidden'}
                         handlerClick={() => handlerModalAssociateNode(item)}>
                         <PlusIcon className="h-4 w-4 " />
                         Associate Node
@@ -103,7 +102,7 @@ export default function SectionTableBridge({
             <TableBody>
               <TableContent rowSpan={6} colSpan={6}>
                 <div className="flex justify-center items-center">
-                  Tidal Ada Data
+                  Tidak Ada Data
                 </div>
               </TableContent>
             </TableBody>

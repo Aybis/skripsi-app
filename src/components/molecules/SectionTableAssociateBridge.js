@@ -23,7 +23,7 @@ export default function SectionTableAssociateBridge({ handlerShowModalForm }) {
         <TableBody>
           <TableContent colSpan={4} rowSpan={4}>
             <div className="flex justify-center items-center">
-              <LoadingIcon color="text-apps-primary" height={8} width={8} />
+              <LoadingIcon color="text-apps-primary" />
             </div>
           </TableContent>
         </TableBody>
@@ -31,7 +31,7 @@ export default function SectionTableAssociateBridge({ handlerShowModalForm }) {
         BRIDGE.listNodeByBridge.map((item, index) => (
           <TableBody key={Math.random()}>
             <TableContent>{index + 1}</TableContent>
-            <TableContent>
+            <TableContent addClassChild={'whitespace-nowrap'}>
               <div className="flex items-center">
                 <div className="w-10 h-10">
                   <ServerIcon className="text-gray-500 h-8 w-8" />
@@ -54,8 +54,9 @@ export default function SectionTableAssociateBridge({ handlerShowModalForm }) {
               </p>
             </TableContent>
             <TableContent>
-              <div className="flex w-72 gap-2 p-4">
+              <div className="relative w-52">
                 <Button
+                  addClass={'w-52 mb-2'}
                   type={'danger'}
                   name={'deleteNode'}
                   handlerClick={(e) => handlerShowModalForm(e, item)}>
@@ -64,6 +65,7 @@ export default function SectionTableAssociateBridge({ handlerShowModalForm }) {
                 </Button>
 
                 <Button
+                  addClass={'w-52 mb-2'}
                   name={'addInterface'}
                   handlerClick={(e) => handlerShowModalForm(e, item)}>
                   <PlusIcon className="h-4 w-4 " />
@@ -72,6 +74,7 @@ export default function SectionTableAssociateBridge({ handlerShowModalForm }) {
 
                 {item.interfaceMember.length > 0 ? (
                   <Button
+                    addClass={'w-52'}
                     type={'danger'}
                     name="deleteInterface"
                     handlerClick={(e) => handlerShowModalForm(e, item)}>

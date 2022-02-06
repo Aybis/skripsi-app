@@ -7,7 +7,7 @@ export default function Tables({ theading, children, addClass }) {
       style={{
         maxHeight: '40rem',
       }}>
-      <table className="min-w-full divide-y divide-gray-200 relative h-full">
+      <table className="min-w-full divide-y divide-gray-200 relative h-full overflow-auto">
         <thead className="bg-blue-100 sticky top-0">
           <tr className="sticky top-0 h-16 w-full leading-none text-gray-400 border-b-2 border-gray-200">
             {theading.map((item) => (
