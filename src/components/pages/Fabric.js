@@ -133,6 +133,7 @@ export default function Fabric() {
       await dispatch(fetchResetUnderlayTunnel());
       setloadingDelete(false);
     } catch (error) {
+      console.log(error);
       setloadingDelete(false);
       setmodalResetUnderlay(false);
     }
