@@ -9,7 +9,6 @@ export default function Dropdown({
   addClass,
   addClassLabel,
   addClassDropdown,
-  defaultValue = ' ',
 }) {
   return (
     <div className={['my-2', addClass].join(' ')}>
@@ -28,7 +27,7 @@ export default function Dropdown({
           addClassDropdown,
         ].join(' ')}
         onChange={handlerChange}
-        defaultValue={'DEFAULT'}>
+        value={value.length > 1 ? value : 'DEFAULT'}>
         <option disabled value={'DEFAULT'}>
           Pilih {label}
         </option>

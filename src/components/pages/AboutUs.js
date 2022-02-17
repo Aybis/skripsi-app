@@ -6,7 +6,7 @@ const people = [
     name: 'Abdul Muchtar Astria',
     role: 'Front End Developer ',
     imageUrl:
-      'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80',
+      'https://ol.binus.ac.id/UserControl/ImageThumb.ashx?id=BN123732873',
     bio: 'Ultricies massa malesuada viverra cras lobortis. Tempor orci hac ligula dapibus mauris sit ut eu. Eget turpis urna maecenas cras. Nisl dictum.',
     nim: '2301968355',
     twitterUrl: '#',
@@ -14,9 +14,9 @@ const people = [
   },
   {
     name: 'Eko Imam Prastyo',
-    role: 'Front End Developer ',
+    role: 'Electrical Engineer',
     imageUrl:
-      'https://images.unsplash.com/photo-1520785643438-5bf77931f493?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80',
+      'https://ol.binus.ac.id/UserControl/ImageThumb.ashx?id=BN123751670',
     bio: 'Ultricies massa malesuada viverra cras lobortis. Tempor orci hac ligula dapibus mauris sit ut eu. Eget turpis urna maecenas cras. Nisl dictum.',
     twitterUrl: '#',
     nim: '2301971343',
@@ -25,9 +25,9 @@ const people = [
   },
   {
     name: 'Hidayah Ramadhlana',
-    role: 'Front End Developer ',
+    role: 'Network & System Engineer',
     imageUrl:
-      'https://images.unsplash.com/photo-1517070208541-6ddc4d3efbcb?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80',
+      'https://ol.binus.ac.id/UserControl/ImageThumb.ashx?id=BN123723370',
     bio: 'Ultricies massa malesuada viverra cras lobortis. Tempor orci hac ligula dapibus mauris sit ut eu. Eget turpis urna maecenas cras. Nisl dictum.',
     twitterUrl: '#',
     nim: '2301966495',
@@ -46,7 +46,7 @@ export default function AboutUs() {
             <div className="space-y-12 lg:grid lg:grid-cols-3 lg:gap-8 lg:space-y-0">
               <div className="space-y-5 sm:space-y-4">
                 <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
-                  Team 1
+                  Team 2
                 </h2>
                 <p className="text-xl text-gray-500 font-semibold">
                   PERANCANGAN SISTEM AUTOMASI ENTERPRISE VPN BERBASIS MERN STACK
@@ -70,13 +70,15 @@ export default function AboutUs() {
                             <div className="text-lg leading-6 font-medium space-y-1">
                               <h3>{person.name}</h3>
                               <div className="flex">
-                                <p className="text-indigo-600">
+                                <p className="text-blue-600">
                                   {person.role} - {person.nim}
                                 </p>
                               </div>
                             </div>
                             <div className="text-lg">
-                              <p className="text-gray-500">{person.bio}</p>
+                              <p className="text-gray-500 hidden">
+                                {person.bio}
+                              </p>
                             </div>
                             <ul className="flex space-x-5">
                               <li>

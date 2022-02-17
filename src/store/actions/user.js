@@ -40,7 +40,7 @@ export const userLogin = (data) => async (dispatch) => {
           token: result.data.token,
         }),
       );
-      Cookies.set('token', result.data.token, { expires: 1 });
+      Cookies.set('session', result.data.token, { expires: 0.5 });
 
       return {
         status: result.status,

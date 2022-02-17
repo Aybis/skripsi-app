@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route, Redirect, withRouter } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const Authenticated = ({
   component: Component,
@@ -8,9 +9,9 @@ const Authenticated = ({
   location,
   ...rest
 }) => {
-  const ok = localStorage.getItem('VMAT:user');
+  const ok = Cookies.get('session');
   localStorage.removeItem('VMAT:redirect');
-
+  console.log(ok);
   return (
     <Route
       {...rest}

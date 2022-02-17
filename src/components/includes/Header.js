@@ -7,17 +7,14 @@ import swal from 'sweetalert';
 import { imageApi } from '../../helpers/Asset';
 import { convertDate } from '../../helpers/convertDate';
 import ToastHandler from '../../helpers/toast';
+import Cookies from 'js-cookie';
 
 const userNavigation = [{ name: 'Sign out', href: 'logout' }];
 
 const handlerLogOut = (val) => {
   if (val === 'logout') {
     // remove cookies
-    document.cookie.split(';').forEach(function (c) {
-      document.cookie = c
-        .replace(/^ +/, '')
-        .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
-    });
+    Cookies.remove('session');
     // remove token
     localStorage.clear();
     ToastHandler('success', 'Logout Berhasil');
